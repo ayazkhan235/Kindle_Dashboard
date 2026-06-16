@@ -1,0 +1,7 @@
+dashboard.html
+dashboard.png
+news/
+dashboard.epub
+*.pyc
+__pycache__/
+config.py
