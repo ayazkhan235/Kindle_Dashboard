@@ -1,181 +1,178 @@
 <!DOCTYPE html>
-<html><head><meta charset="utf-8">
-<meta http-equiv="refresh" content="0; url=https://ayazkhan235.github.io/Kindle_Dashboard/">
+<html><head>
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width">
+<meta http-equiv="refresh" content="3600">
+<title>Dashboard</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:Georgia,serif; background:#fff; color:#000; font-size:20px;
-       -webkit-user-select:none; }
-#wrap { padding:20px 26px 90px 26px; }
+       -webkit-user-select:none; user-select:none; }
+#wrap { padding:20px 26px 80px 26px; max-width:1072px; margin:0 auto; }
 .hdr { font-size:13px; letter-spacing:2px; text-transform:uppercase; color:#888;
        border-bottom:1px solid #000; padding-bottom:10px; margin-bottom:16px; }
 .hdr .r { float:right; }
 .tab { display:none; }
 .tab.on { display:block; }
 
-/* bottom bar */
-#curtab { position:fixed; left:0; right:80px; bottom:0; height:70px; background:#000;
-          color:#888; font-size:13px; letter-spacing:2px; text-transform:uppercase;
-          line-height:70px; padding-left:22px; }
-#mbtn { position:fixed; right:0; bottom:0; width:80px; height:70px; background:#111;
-        color:#fff; font-size:32px; line-height:70px; text-align:center; cursor:pointer;
-        border-left:1px solid #333; }
-#menu { display:none; position:fixed; left:0; right:0; bottom:70px;
-        background:#fff; border-top:3px solid #000; z-index:200; }
-.mitem { display:block; padding:22px 26px; font-size:22px;
-         border-bottom:1px solid #ddd; cursor:pointer; }
-.mitem.mon { font-weight:bold; background:#f8f8f8; }
+/* bottom nav */
+#nav { position:fixed; bottom:0; left:0; right:0; background:#fff;
+       border-top:2px solid #000; display:table; width:100%; z-index:200; }
+#nav button { display:table-cell; text-align:center; padding:14px 2px;
+              font-size:14px; letter-spacing:0; text-transform:uppercase;
+              font-family:Georgia,serif; border:none; background:none;
+              cursor:pointer; color:#555; width:14.28%; }
+#nav button.on { font-weight:bold; color:#000; background:#f0f0f0; }
 
-/* weather hero */
-.hero { border-bottom:3px double #000; padding-bottom:18px; margin-bottom:18px; }
+/* weather */
+.hero { border-bottom:3px double #000; padding-bottom:16px; margin-bottom:16px; }
 .temp { font-size:120px; font-weight:bold; line-height:0.85; letter-spacing:-4px;
         display:inline-block; vertical-align:top; }
 .wright { display:inline-block; vertical-align:top; margin-left:22px; margin-top:10px; }
 .cond { font-size:30px; font-style:italic; }
 .wsub { font-size:18px; color:#555; margin-top:8px; }
-.hilo { font-size:22px; margin-top:12px; }
+.hilo { font-size:22px; margin-top:10px; }
 .hilo b { font-size:26px; }
-.taphint { float:right; font-size:14px; color:#999; font-style:italic; margin-top:18px; }
-.wgrid { width:100%; border-collapse:collapse; margin:0 0 22px; }
-.wgrid td { border:1px solid #ccc; padding:14px 12px; width:25%; }
+.wgrid { width:100%; border-collapse:collapse; margin:0 0 20px; }
+.wgrid td { border:1px solid #ccc; padding:12px 10px; width:25%; }
 .wlabel { font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#999; }
-.wval { font-size:24px; font-weight:bold; margin-top:4px; }
+.wval { font-size:22px; font-weight:bold; margin-top:4px; }
 .ttab { width:100%; border-collapse:collapse; }
 .ttab td { text-align:center; padding:8px 2px; }
-.ttab .tval { font-size:22px; font-weight:bold; }
+.ttab .tval { font-size:20px; font-weight:bold; }
+.ttab .thr { font-size:13px; color:#999; }
 .rainh { font-size:13px; text-transform:uppercase; letter-spacing:2px; color:#888;
-         border-bottom:2px solid #000; padding-bottom:5px; margin:0 0 14px; }
-.raintbl { width:100%; border-collapse:collapse; }
-.raintbl td { text-align:center; padding:6px 2px; vertical-align:bottom; }
-.raintbl .pct { font-weight:bold; font-size:17px; }
-.raintbl .hr { color:#999; font-size:13px; margin-top:5px; }
-.colwrap { height:80px; position:relative; width:60%; margin:6px auto 0; }
-.col { position:absolute; bottom:0; left:0; right:0; background:#000; }
-.colbg { position:absolute; bottom:0; left:0; right:0; top:0; background:#eee; }
-.htab { width:100%; border-collapse:collapse; margin-top:4px; }
-.htab th { font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#999;
-           text-align:left; padding:6px 8px; border-bottom:2px solid #000; }
-.htab td { padding:11px 8px; border-bottom:1px solid #e2e2e2; font-size:19px; }
-.htab .hh { font-weight:bold; }
-.htab .rp { font-weight:bold; }
-.htab .rp0 { color:#bbb; font-weight:normal; }
+         border-bottom:2px solid #000; padding-bottom:5px; margin:0 0 12px; }
 
 /* shared */
 h2 { font-size:13px; text-transform:uppercase; letter-spacing:3px; border-bottom:2px solid #000;
      padding-bottom:5px; margin:24px 0 14px; }
 h2:first-child { margin-top:0; }
-.backbtn { display:inline-block; background:#000; color:#fff; font-size:15px;
-           padding:9px 18px; margin-bottom:18px; letter-spacing:1px; cursor:pointer; }
 .row { padding:14px 0; border-bottom:1px solid #ddd; }
 .row .t { font-size:21px; font-weight:bold; }
 .row .s { font-size:15px; color:#777; margin-top:3px; }
 .empty { color:#aaa; font-style:italic; padding:14px 0; font-size:18px; }
-.rate { font-size:30px; margin:16px 0; }
-.rate b { font-size:34px; }
+.sync { font-size:13px; color:#bbb; margin-bottom:16px; }
+.rate { font-size:28px; margin:12px 0; }
+.rate b { font-size:32px; }
 
-/* bot stats grid */
+/* bot stats */
 .sgrid { width:100%; border-collapse:collapse; margin-bottom:6px; }
-.sgrid td { border:1px solid #ccc; padding:14px 10px; width:50%; vertical-align:top; }
-.sgrid .sl { font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#999; }
-.sgrid .sv { font-size:36px; font-weight:bold; margin-top:4px; line-height:1; }
-.sgrid .sv.red { color:#000; background:#000; color:#fff; padding:2px 8px; }
+.sgrid td { border:1px solid #ccc; padding:12px 10px; width:50%; vertical-align:top; }
+.sl { font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#999; }
+.sv { font-size:36px; font-weight:bold; margin-top:4px; line-height:1; }
 .full { width:100%; border-collapse:collapse; margin-bottom:6px; }
-.full td { border:1px solid #ccc; padding:14px 10px; }
-.full .sl { font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#999; }
-.full .sv { font-size:36px; font-weight:bold; margin-top:4px; line-height:1; }
+.full td { border:1px solid #ccc; padding:12px 10px; }
+.inv { background:#000; color:#fff; }
+.inv .sl { color:#aaa; }
+.htab { width:100%; border-collapse:collapse; margin-top:4px; }
+.htab th { font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#999;
+           text-align:left; padding:6px 8px; border-bottom:2px solid #000; }
+.htab td { padding:10px 8px; border-bottom:1px solid #e2e2e2; font-size:19px; }
+.htab .hh { font-weight:bold; }
 
-/* claude tab */
+/* claude */
 .ctimer { font-size:96px; font-weight:bold; line-height:1; letter-spacing:-3px;
-          text-align:center; padding:40px 0 10px; }
-.csub { font-size:22px; color:#777; text-align:center; margin-bottom:36px; }
-.cbar { width:100%; border-collapse:collapse; margin-bottom:28px; }
+          text-align:center; padding:36px 0 8px; }
+.csub { font-size:22px; color:#777; text-align:center; margin-bottom:32px; }
+.cbar { width:100%; border-collapse:collapse; margin-bottom:24px; }
 .cbar td { height:20px; }
-.cmeta { font-size:18px; color:#555; text-align:center; line-height:1.8; }
+.cmeta { font-size:18px; color:#555; text-align:center; line-height:1.9; }
 
-/* news tab */
-.nitem { padding:18px 0; border-bottom:1px solid #ddd; cursor:pointer; }
+/* news + save later */
+.nitem { padding:18px 0; border-bottom:1px solid #ddd; }
 .ntitle { font-size:22px; font-weight:bold; line-height:1.3; }
-.nsrc { font-size:13px; color:#999; margin-top:5px; text-transform:uppercase;
-        letter-spacing:1px; }
+.nsrc { font-size:13px; color:#999; margin-top:4px; text-transform:uppercase; letter-spacing:1px; }
+.nact { font-size:14px; color:#555; margin-top:8px; }
+.nact span { border:1px solid #999; padding:4px 12px; margin-right:8px; cursor:pointer; }
 .av { display:none; }
-.atitle { font-size:26px; font-weight:bold; line-height:1.3; margin-bottom:14px; }
-.asrc { font-size:13px; color:#999; margin-bottom:16px; text-transform:uppercase;
-        letter-spacing:1px; }
+.backbtn { display:inline-block; background:#000; color:#fff; font-size:15px;
+           padding:9px 18px; margin-bottom:18px; letter-spacing:1px; cursor:pointer; }
+.atitle { font-size:26px; font-weight:bold; line-height:1.3; margin-bottom:12px; }
+.asrc { font-size:13px; color:#999; margin-bottom:14px; text-transform:uppercase; letter-spacing:1px; }
 .abody { font-size:20px; line-height:1.75; }
 .abody p { margin:0 0 16px; }
 .hnscore { font-size:13px; color:#999; margin-top:4px; }
-.hnurl { font-size:13px; color:#aaa; margin-top:4px; word-break:break-all; }
+.saved-empty { color:#aaa; font-style:italic; padding:20px 0; font-size:18px; }
 
 /* github */
-.repo { padding:14px 0; border-bottom:1px solid #ddd; }
+.repo { padding:12px 0; border-bottom:1px solid #ddd; }
 .rname { font-size:20px; font-weight:bold; }
-.rmeta { font-size:14px; color:#777; margin-top:4px; }
+.rmeta { font-size:14px; color:#777; margin-top:3px; }
 .lock { font-size:12px; border:1px solid #ccc; padding:1px 6px; color:#999; margin-left:6px; }
-</style></head>
-<body>
+
+/* algo trader */
+.pos { padding:14px 0; border-bottom:1px solid #ddd; }
+.psym { font-size:22px; font-weight:bold; }
+.pmeta { font-size:15px; color:#777; margin-top:4px; }
+.pnl-pos { color:#000; font-weight:bold; }
+.pnl-neg { color:#555; }
+
+/* pharma pulse */
+.pulse-item { padding:12px 0; border-bottom:1px solid #eee; }
+.pulse-title { font-size:19px; line-height:1.3; }
+.pulse-date { font-size:13px; color:#aaa; margin-top:3px; }
+
+/* pagination */
+.pgbar { display:flex; justify-content:space-between; align-items:center;
+         padding:12px 0; margin-top:8px; }
+.pgbtn { font-size:20px; font-weight:bold; padding:8px 16px;
+         background:#f0f0f0; border-radius:6px; cursor:pointer; }
+.pginfo { font-size:16px; color:#888; }
+</style>
+</head><body>
 <div id="wrap">
-<div class="hdr">Dashboard <span class="r">Wed 17 Jun 19:30</span></div>
+<div class="hdr">
+  <span id="curtab">Weather</span>
+  <span class="r">Wed 17 Jun 23:35 UTC</span>
+</div>
+<div id="nav"><button onclick="show('weather')" class="on">Wthr</button><button onclick="show('bot')" >Bot</button><button onclick="show('day')" >Day</button><button onclick="show('claude')" >Claude</button><button onclick="show('news')" >News</button><button onclick="show('saved')" >Saved</button><button onclick="show('github')" >Git</button></div>
 <div id="tab-weather" class="tab on">
-<div id="w-main">
- <div class="hero" onclick="wdetail(1)">
-   <span class="taphint">tap for hourly &rsaquo;</span>
-   <span class="temp">30&deg;</span>
-   <span class="wright"><div class="cond">Mostly clear</div>
-     <div class="wsub">Mumbai &middot; feels 34&deg;</div>
-     <div class="hilo">High <b>33&deg;</b> &nbsp; Low <b>29&deg;</b></div>
-   </span>
- </div>
- <table class="wgrid">
-  <tr><td><div class="wlabel">Wind</div><div class="wval">15 km/h</div></td>
-      <td><div class="wlabel">Humidity</div><div class="wval">67%</div></td>
-      <td><div class="wlabel">UV</div><div class="wval">0 Low</div></td>
-      <td><div class="wlabel">AQI</div><div class="wval">142 Sensitive</div></td></tr>
- </table>
- <div class="rainh">Rain probability &mdash; next 8 hours</div>
- <table class="raintbl" onclick="wdetail(1)"><tr><td><div class="pct">26%</div><div class="colwrap"><div class="colbg"></div><div class="col" style="height:26%"></div></div><div class="hr">19:00</div></td><td><div class="pct">22%</div><div class="colwrap"><div class="colbg"></div><div class="col" style="height:22%"></div></div><div class="hr">20:00</div></td><td><div class="pct">16%</div><div class="colwrap"><div class="colbg"></div><div class="col" style="height:16%"></div></div><div class="hr">21:00</div></td><td><div class="pct">10%</div><div class="colwrap"><div class="colbg"></div><div class="col" style="height:10%"></div></div><div class="hr">22:00</div></td><td><div class="pct">6%</div><div class="colwrap"><div class="colbg"></div><div class="col" style="height:6%"></div></div><div class="hr">23:00</div></td><td><div class="pct">6%</div><div class="colwrap"><div class="colbg"></div><div class="col" style="height:6%"></div></div><div class="hr">00:00</div></td><td><div class="pct">9%</div><div class="colwrap"><div class="colbg"></div><div class="col" style="height:9%"></div></div><div class="hr">01:00</div></td><td><div class="pct">12%</div><div class="colwrap"><div class="colbg"></div><div class="col" style="height:12%"></div></div><div class="hr">02:00</div></td></tr></table>
- <div class="rainh" style="margin-top:22px">Temperature &mdash; next 8 hours</div>
- <table class="ttab"><tr><td><div class="tval">30&deg;</div><div class="hr">19:00</div></td><td><div class="tval">30&deg;</div><div class="hr">20:00</div></td><td><div class="tval">30&deg;</div><div class="hr">21:00</div></td><td><div class="tval">30&deg;</div><div class="hr">22:00</div></td><td><div class="tval">30&deg;</div><div class="hr">23:00</div></td><td><div class="tval">30&deg;</div><div class="hr">00:00</div></td><td><div class="tval">30&deg;</div><div class="hr">01:00</div></td><td><div class="tval">30&deg;</div><div class="hr">02:00</div></td></tr></table>
+<div class="hero">
+  <span class="temp">30&deg;</span>
+  <span class="wright">
+    <div class="cond">Mostly clear</div>
+    <div class="wsub">Mumbai &middot; feels 34&deg;</div>
+    <div class="hilo">High <b>34&deg;</b> &nbsp; Low <b>29&deg;</b></div>
+  </span>
 </div>
-<div id="w-detail" style="display:none">
- <span class="backbtn" onclick="wdetail(0)">&lsaquo; Back</span>
- <div class="rainh">Hourly forecast &mdash; rain today 0.5 mm</div>
- <table class="htab">
-  <tr><th>Time</th><th>Temp</th><th>Rain</th><th>Amount</th><th>Sky</th></tr>
-  <tr><td class="hh">19:00</td><td>30&deg;</td><td class="rp">26%</td><td>&mdash;</td><td>Mostly clear</td></tr><tr><td class="hh">20:00</td><td>30&deg;</td><td class="rp">22%</td><td>&mdash;</td><td>Clear</td></tr><tr><td class="hh">21:00</td><td>30&deg;</td><td class="rp rp0">16%</td><td>&mdash;</td><td>Clear</td></tr><tr><td class="hh">22:00</td><td>30&deg;</td><td class="rp rp0">10%</td><td>&mdash;</td><td>Clear</td></tr><tr><td class="hh">23:00</td><td>30&deg;</td><td class="rp rp0">6%</td><td>&mdash;</td><td>Clear</td></tr><tr><td class="hh">00:00</td><td>30&deg;</td><td class="rp rp0">6%</td><td>&mdash;</td><td>Mostly clear</td></tr><tr><td class="hh">01:00</td><td>30&deg;</td><td class="rp rp0">9%</td><td>&mdash;</td><td>Mostly clear</td></tr><tr><td class="hh">02:00</td><td>30&deg;</td><td class="rp rp0">12%</td><td>&mdash;</td><td>Mostly clear</td></tr><tr><td class="hh">03:00</td><td>30&deg;</td><td class="rp rp0">15%</td><td>&mdash;</td><td>Mostly clear</td></tr><tr><td class="hh">04:00</td><td>29&deg;</td><td class="rp rp0">19%</td><td>&mdash;</td><td>Clear</td></tr><tr><td class="hh">05:00</td><td>29&deg;</td><td class="rp">24%</td><td>0.1 mm</td><td>Light drizzle</td></tr><tr><td class="hh">06:00</td><td>29&deg;</td><td class="rp">32%</td><td>0.1 mm</td><td>Light drizzle</td></tr><tr><td class="hh">07:00</td><td>29&deg;</td><td class="rp">41%</td><td>0.2 mm</td><td>Light drizzle</td></tr><tr><td class="hh">08:00</td><td>31&deg;</td><td class="rp">45%</td><td>0.2 mm</td><td>Light drizzle</td></tr><tr><td class="hh">09:00</td><td>32&deg;</td><td class="rp">38%</td><td>&mdash;</td><td>Mostly clear</td></tr><tr><td class="hh">10:00</td><td>32&deg;</td><td class="rp">26%</td><td>&mdash;</td><td>Mostly clear</td></tr>
- </table>
-</div>
+<table class="wgrid"><tr>
+  <td><div class="wlabel">Wind</div><div class="wval">9 km/h</div></td>
+  <td><div class="wlabel">Humidity</div><div class="wval">65%</div></td>
+  <td><div class="wlabel">UV</div><div class="wval">0 Low</div></td>
+  <td><div class="wlabel">AQI</div><div class="wval">104 Sensitive</div></td>
+</tr></table>
+<div class="rainh">Rain probability &mdash; next 8 hours</div>
+<table class="ttab"><tr><td><div class="tval">6%</div><div class="thr">23:00</div></td><td><div class="tval">11%</div><div class="thr">00:00</div></td><td><div class="tval">16%</div><div class="thr">01:00</div></td><td><div class="tval">22%</div><div class="thr">02:00</div></td><td><div class="tval">27%</div><div class="thr">03:00</div></td><td><div class="tval">33%</div><div class="thr">04:00</div></td><td><div class="tval">39%</div><div class="thr">05:00</div></td><td><div class="tval">48%</div><div class="thr">06:00</div></td></tr></table>
+<div class="rainh" style="margin-top:20px">Temperature &mdash; next 8 hours</div>
+<table class="ttab"><tr><td><div class="tval">30&deg;</div><div class="thr">23:00</div></td><td><div class="tval">30&deg;</div><div class="thr">00:00</div></td><td><div class="tval">30&deg;</div><div class="thr">01:00</div></td><td><div class="tval">30&deg;</div><div class="thr">02:00</div></td><td><div class="tval">29&deg;</div><div class="thr">03:00</div></td><td><div class="tval">29&deg;</div><div class="thr">04:00</div></td><td><div class="tval">28&deg;</div><div class="thr">05:00</div></td><td><div class="tval">28&deg;</div><div class="thr">06:00</div></td></tr></table>
 </div>
 <div id="tab-bot" class="tab">
-<h2>Outreach Bot</h2>
+<div class="sync">Mac synced: 12m ago</div>
+<h2>Rates</h2>
+<div class="rate">USD / INR &nbsp; <b>&#8377;94.62</b></div>
+<div class="rate">EUR / INR &nbsp; <b>&#8377;109.86</b></div>
+<h2 style="margin-top:28px">Outreach Bot</h2>
+
 <table class="sgrid">
   <tr>
     <td><div class="sl">Today Sent</div><div class="sv">0</div></td>
     <td><div class="sl">In Pipeline</div><div class="sv">33</div></td>
-  </tr>
-  <tr>
+  </tr><tr>
     <td><div class="sl">Open Rate</div><div class="sv">0%</div></td>
     <td><div class="sl">Reply Rate</div><div class="sv">0%</div></td>
-  </tr>
-  <tr>
+  </tr><tr>
     <td><div class="sl">Pending (NEW)</div><div class="sv">109</div></td>
     <td><div class="sl">Email Opens</div><div class="sv">0</div></td>
   </tr>
 </table>
 <table class="full">
-  <tr style="background:#000;color:#fff">
-    <td><div class="sl">Follow-ups Due Today</div><div class="sv">7</div></td>
-  </tr>
-  <tr>
-    <td><div class="sl">Bounced</div><div class="sv">2</div></td>
-  </tr>
+  <tr class="inv"><td><div class="sl">Follow-ups Due Today</div><div class="sv">7</div></td></tr>
+  <tr><td><div class="sl">Bounced</div><div class="sv">2</div></td></tr>
 </table>
-<h2>Recent Activity</h2>
-<table class="htab">
-  <tr><th>Date</th><th>Event</th><th>Company</th></tr>
-  <tr><td class="hh">2026-06-15</td><td>FOLLOW_UP</td><td>Magel Sa</td></tr><tr><td class="hh">2026-06-15</td><td>FOLLOW_UP</td><td>Luna Co For Industrial Investments Sae</td></tr><tr><td class="hh">2026-06-15</td><td>FOLLOW_UP</td><td>Middle East Chemical Manufacturing Co Wll</td></tr><tr><td class="hh">2026-06-15</td><td>DRAFT</td><td>Bilim Ilac San Ve Tic As</td></tr><tr><td class="hh">2026-06-15</td><td>DRAFT</td><td>Adrivan Comercio Importacao E Representacao Ltda</td></tr>
-</table>
+<h2 style="margin-top:28px">Industry Pulse</h2><div id="industry-news"><div class="pulse-item paged-item"><div class="pulse-title">India's drug lifeline to Africa disrupted by Iran war - DW.com</div><div class="pulse-date">Wed, 27 May 2026</div></div><div class="pulse-item paged-item"><div class="pulse-title">Freight Surges and Maritime Disruptions Put Indian Pharma Exports at Risk - Pharmaceutical Commerce</div><div class="pulse-date">Fri, 06 Mar 2026</div></div><div class="pulse-item paged-item"><div class="pulse-title">Cargo Shipping Market Size, Share, Growth, Analysis, Report, 2034 - Straits Research</div><div class="pulse-date">Mon, 25 May 2026</div></div><div class="pulse-item paged-item"><div class="pulse-title">Active Pharmaceutical Ingredient [API] Market Size, Share, 2034 - Fortune Business Insights</div><div class="pulse-date">Mon, 01 Jun 2026</div></div><div class="pulse-item paged-item"><div class="pulse-title">API supplier BASF raises prices up to 20% in response to rising energy, raw material costs - Fierce Pharma</div><div class="pulse-date">Tue, 31 Mar 2026</div></div><div class="pulse-item paged-item"><div class="pulse-title">Active Pharmaceutical Ingredients (API) CDMO Market Size USD 247.60 Bn by 2035 Rising Demand for HPAPIs and Biologics Drives Growth - BioSpace</div><div class="pulse-date">Thu, 21 May 2026</div></div><div class="pgbar" id="pg-industry-news"></div></div><script>initPager("industry-news",10);</script>
 </div>
-<div id="tab-day" class="tab"><h2>Calendar</h2><div class="empty">No events today</div><h2>Reminders</h2><div class="row"><div class="t">&#9633; error: you need to grant reminders access</div></div><h2>Notes</h2><div class="row"><div class="t">Split to column - done</div><div class="s">Split to column - done
+<div id="tab-day" class="tab"><div class="sync">Mac synced: 12m ago</div><h2>Calendar</h2><div class="empty">No events today</div><h2>Reminders</h2><div class="row"><div class="t">&#9633; error: you need to grant reminders access</div></div><h2>Notes</h2><div class="row"><div class="t">Split to column - done</div><div class="s">Split to column - done
 copy all in one sheet - done 
 remove unnecessary data - done
 mob file vlookup - done 
@@ -183,64 +180,46 @@ go to nikit</div></div><div class="row"><div class="t">Snehal resume</div><div c
 ￼</div></div><div class="row"><div class="t">Loan to be paid</div><div class="s">Loan to be paid
 
 ￼</div></div></div>
-<div id="tab-rates" class="tab">
-<h2>Rates</h2>
-<div class="rate">USD / INR &nbsp; <b>&#8377;94.62</b></div>
-<div class="rate">EUR / INR &nbsp; <b>&#8377;109.86</b></div>
-<div style="height:20px"></div>
-<h2>Claude Billing</h2>
-<div class="rate">Resets in <b>13d 4h</b></div>
-</div>
 <div id="tab-claude" class="tab">
 <div class="ctimer" id="ctimer">--</div>
 <div class="csub">remaining in session</div>
 <table class="cbar"><tr id="cbar"></tr></table>
 <div class="cmeta">
   <div id="creset">&nbsp;</div>
-  <div id="cstart">Started 07:29 PM</div>
+  <div id="cstart">Started 11:23 PM</div>
+  <div style="margin-top:20px;font-size:16px;color:#aaa">Billing resets in <b>13d 0h</b></div>
+  <div style="font-size:13px;color:#bbb;margin-top:6px">Session from Mac sync: 12m ago</div>
 </div>
+<h2 style="margin-top:28px">AI &amp; Claude News</h2><div id="ai-news"><div class="pulse-item paged-item"><div class="pulse-title">Agentic coding and persistent returns to expertise - Anthropic</div><div class="pulse-date">Anthropic &middot; Tue, 16 Jun 2026</div></div><div class="pulse-item paged-item"><div class="pulse-title">Anthropic &quot;pauses&quot; token-based billing for its Claude Agent SDK - Ars Technica</div><div class="pulse-date">Ars Technica &middot; Tue, 16 Jun 2026</div></div><div class="pulse-item paged-item"><div class="pulse-title">India's Wipro opens AI center for Anthropic's Claude in Bengaluru - Reuters</div><div class="pulse-date">Reuters &middot; Tue, 16 Jun 2026</div></div><div class="pulse-item paged-item"><div class="pulse-title">Anthropic's Claude Fable 5 and Mythos 5 AI suspended over security fears - BBC</div><div class="pulse-date">BBC &middot; Sat, 13 Jun 2026</div></div><div class="pulse-item paged-item"><div class="pulse-title">General-purpose large language models outperform specialized clinical AI tools on medical benchmarks - Nature</div><div class="pulse-date">Nature &middot; Fri, 12 Jun 2026</div></div><div class="pulse-item paged-item"><div class="pulse-title">The Roadmap to Becoming an LLM Engineer in 2026 - KDnuggets</div><div class="pulse-date">KDnuggets &middot; Tue, 16 Jun 2026</div></div><div class="pulse-item paged-item"><div class="pulse-title">Large Language Model(LLM) Market Size | Industry Insights [2035] - Business Research Insights</div><div class="pulse-date">Business Research Insights &middot; Tue, 16 Jun 2026</div></div><div class="pulse-item paged-item"><div class="pulse-title">Governor Newsom and First Partner Siebel Newsom highlight California’s contributions to the America250 time capsule - California State Portal | CA.gov</div><div class="pulse-date">California State Portal | CA.gov &middot; Mon, 15 Jun 2026</div></div><div class="pulse-item paged-item"><div class="pulse-title">A sobering new sign for OpenAI as ChatGPT competitors gain ground - Fast Company</div><div class="pulse-date">Fast Company &middot; Wed, 17 Jun 2026</div></div><div class="pulse-item paged-item"><div class="pulse-title">ChatGPT market share slips below 50% as Gemini, Claude gain ground: Report - Business Standard</div><div class="pulse-date">Business Standard &middot; Wed, 17 Jun 2026</div></div><div class="pulse-item paged-item"><div class="pulse-title">Gemini now costs less than ChatGPT Go — and Google just doubled the storage - TechRadar</div><div class="pulse-date">TechRadar &middot; Mon, 15 Jun 2026</div></div><div class="pulse-item paged-item"><div class="pulse-title">Anthropic has caught up to OpenAI in image understanding - understandingai.org</div><div class="pulse-date">understandingai.org &middot; Wed, 10 Jun 2026</div></div><div class="pulse-item paged-item"><div class="pulse-title">Americans and AI 2026: Chatbots, Smart Devices and Views on Impact - Pew Research Center</div><div class="pulse-date">Pew Research Center &middot; Wed, 17 Jun 2026</div></div><div class="pulse-item paged-item"><div class="pulse-title">Building trustworthy healthcare AI for 2026: Why medication intelligence matters - Wolters Kluwer</div><div class="pulse-date">Wolters Kluwer &middot; Wed, 17 Jun 2026</div></div><div class="pulse-item paged-item"><div class="pulse-title">Anthropic Employees Accuse Trump Administration of Targeting Them - The New York Times</div><div class="pulse-date">The New York Times &middot; Wed, 17 Jun 2026</div></div><div class="pgbar" id="pg-ai-news"></div></div><script>initPager("ai-news",10);</script>
 </div>
-<div id="tab-news" class="tab"><div id="nl"><h2>News</h2><div class="nitem" onclick="openArticle(0)"><div class="ntitle">Israel launches fresh strikes on Lebanon despite Trump criticism</div><div class="nsrc">BBC News</div></div><div class="nitem" onclick="openArticle(1)"><div class="ntitle">Status quo at Jerusalem's holiest site under threat as Israeli nationalists flout rules</div><div class="nsrc">BBC News</div></div><div class="nitem" onclick="openArticle(2)"><div class="ntitle">'They came with machetes' - deadline looms for migrants to leave South Africa</div><div class="nsrc">BBC News</div></div><div class="nitem" onclick="openArticle(3)"><div class="ntitle">Search for six-year-old Ebola patient after armed men storm DR Congo hospital</div><div class="nsrc">BBC News</div></div><div class="nitem" onclick="openArticle(4)"><div class="ntitle">Group planned to attack White House UFC event using snipers and drones, FBI says</div><div class="nsrc">BBC News</div></div><h2 style="margin-top:28px">Hacker News</h2><div class="nitem"><div class="ntitle">Want your images back? Sure... That'll be $5!</div><div class="hnscore">133 pts &middot; lutr</div></div><div class="nitem"><div class="ntitle">GLM-5.2 is the new leading open weights model on Artificial Analysis</div><div class="hnscore">382 pts &middot; himata4113</div></div><div class="nitem"><div class="ntitle">Sixty percent of US consumers say 'AI' in brand messaging is a turnoff</div><div class="hnscore">317 pts &middot; thm</div></div><div class="nitem"><div class="ntitle">RFC 10008: The new HTTP Query Method</div><div class="hnscore">118 pts &middot; schappim</div></div><div class="nitem"><div class="ntitle">MicroUI – A tiny, portable, immediate-mode UI library written in ANSI C</div><div class="hnscore">35 pts &middot; peter_d_sherman</div></div></div><div class="av" id="av-0"><span class="backbtn" onclick="backToNews()">&lsaquo; News</span><div class="asrc">BBC News</div><div class="atitle">Israel launches fresh strikes on Lebanon despite Trump criticism</div><div class="abody"><p>Israeli forces have carried out new strikes in southern Lebanon, state media say, despite renewed criticism from US President Donald Trump of Israel's actions in the country.</p><p>On Wednesday, Israeli jets struck the Nabatieh al-Fawqa area and the outskirts of neighbouring Kfar Tebnit, Lebanon's National News Agency (NNA) reported. The Israeli military has not yet commented, but has previously said it is targeting the Iran-backed armed group Hezbollah.</p><p>The text of a deal between the US and Iran to end the war has not been released, but mediator Pakistan says it includes Lebanon.</p><p>On Tuesday, Trump said Israeli Prime Minister Benjamin Netanyahu needed "to be more responsible with respect to Lebanon".</p><p>Speaking at the G7 summit in France, he also said that Israel had been fighting Hezbollah for "too long and too many people are being killed".</p><p>Both Israel and Hezbollah have carried out attacks against each other since the US-Iran agreement was announced on Sunday night.</p><p>Earlier that day, an Israeli air strike on Beirut in response to cross-border rocket attack by Hezbollah had put pressure on attempts to finalise the deal.</p><p>Trump told the G7 that he had a "great relationship" with Netanyahu but said he "didn't like that he did an attack... that was too much".</p><p>He added: "Without the United States, there would be no Israel. Without me, there would be no Israel because no other president was willing to do what I did."</p><p>Netanyahu said on Monday that his country's forces would remain in Lebanon "for as long as necessary".</p><p>Iran's Foreign Minister, Abbas Araghchi, has warned that it would view any Israeli attack on Lebanon or continued Israeli military presence in Lebanese territory as a violation of the interim agreement with the US.</p><p>The contents of the agreement - referred to as a memorandum of understanding - have not been officially released.</p><p>Both sides were expected to sign the deal on Friday in the Swiss resort of Bürgenstock, Switzerland's Foreign Ministry told the Schweiz Heute newspaper.</p><p>Trump said he would likely hold a news conference to publicly read the agreement between the US and Iran "word by word".</p><p>He also said the deal meant Iran would "never have a nuclear weapon" and that the crucial Strait of Hormuz waterway in the Gulf would reopen and be "toll-free".</p><p>Trump has argued this deal would be better than the one Barack Obama negotiated when he was president.</p><p>"We didn't pay for it like Obama did. He paid billions of dollars," Trump said on Tuesday.</p><p>Under the 2015 Joint Comprehensive Plan of Action (JCPOA) with the US and five other world powers, Iran agreed to limit its nuclear activities and allow international inspections in return for sanctions relief and the release of frozen funds.</p><p>Copyright 2026 BBC. All rights reserved. The BBC is not responsible for the content of external sites. Read about our approach to external linking.</p></div></div><div class="av" id="av-1"><span class="backbtn" onclick="backToNews()">&lsaquo; News</span><div class="asrc">BBC News</div><div class="atitle">Status quo at Jerusalem's holiest site under threat as Israeli nationalists flout rules</div><div class="abody"><p>"The whole land of Israel was promised to the children of God… and this is where we are going to build a new Temple for the entire humanity to come and pray together."</p><p>Those were the potentially incendiary words of Moshe Feiglin, a right-wing nationalist Israeli politician, who spoke to me as he came down from the al-Aqsa mosque compound in Jerusalem, where he had been praying and singing religious songs with a group of around 20 other religious Jews.</p><p>Feiglin spoke openly and clearly, almost as if his argument was neither controversial nor contested.</p><p>But what he was saying and doing was in complete contravention of a sensitive agreement that seeks to maintain the peace at one of the most holy and emotionally charged places on Earth.</p><p>For Moshe Feiglin and others like him, it is simple. They want to build a huge new Jewish temple on the very site which, for the last 1,400 years, has been one of the most sacred places in Islam - al-Aqsa.</p><p>The compound - also known to Muslims as al-Haram al-Sharif (Noble Sanctuary), and to Jews as the Temple Mount - is one of the most recognisable and visually impressive sites in the Middle East.</p><p>The gold-covered Dome of the Rock dominates the 35-acre site and can be seen for miles around. Al-Aqsa is mentioned in the Quran, and it is from where Muslims believe the Prophet Muhammad ascended to Heaven. It is also a site reserved exclusively for Muslim prayer – but is that about to change?</p><p>The site is also the most important place in Judaism. Below the compound, alongside its supporting Western Wall, Jews pray and mourn the destruction by the Romans of the Jewish Temple on the platform above, almost 2,000 years ago.</p><p>Under what is known as the Status Quo, a decades-old understanding, custody of the al-Aqsa compound is the responsibility of a Jordanian-administered Islamic body - the Waqf (Endowment).</p><p>Non-Muslims are allowed to visit al-Aqsa but they are not allowed to pray there or carry out religious rites. The Chief Rabbinate of Israel and most ultra-Orthodox rabbis also prohibit Jewish prayer on the site on halachic (Jewish legal) grounds.</p><p>Those are the conventions and rulings that Feiglin and others now openly flout and disregard.</p><p>Recent reports and claims that Israeli and US officials are working together to abandon the Status Quo have caused widespread alarm.</p><p>The news outlet, Middle East Eye, was told by multiple sources that a new body created by the Israeli government would declare the al-Aqsa compound a "multi-faith centre".</p><p>When questioned about those reports recently at a Congressional hearing, the US Secretary of State, Marco Rubio, said he had "no knowledge of them", although the high-profile US ambassador to Israel, Mike Huckabee, has often spoken out about Jewish connections to the holy places in Jerusalem and the occupied West Bank.</p><p>Other reports suggested that large-scale Jewish prayer would be allowed on the site and that all aspects of its governance would be gradually taken over by Israel, which captured East Jerusalem, including the Old City and its holy places, along with the rest of the West Bank, from Jordan in the 1967 Middle East War and later annexed it in a move that is not recognised by most countries.</p><p>The Israeli prime minister's office has repeatedly said that there has been no change to the Status Quo.</p><p>"It will not happen," warns Dr Mustafa Abu Sway, the Deputy Head of the Islamic Waqf Council.</p><p>On a vantage point in the Old City, he acknowledges that control of al-Aqsa is a sensitive issue in which Israeli protagonists feel empowered.</p><p>He also fears, with some justification, given the historical context, that any formal change in the Status Quo could easily lead to another explosion of tension between Jews and Muslims.</p><p>"Peace without leaving al-Aqsa Mosque alone, is simply opening a Pandora's box. It is jeopardising the peace in the region, and it pitches everyone against everyone," says Abu Sway, a respected Palestinian expert in Islamic studies and regional history.</p><p>Jordan, Gulf countries and Egypt have all expressed alarm and concern at the recent erosion of Islamic authority at al-Aqsa. The British government, too, has said that "the historic status quo arrangements at Jerusalem's Holy Sites must be respected".</p><p>But some outspoken nationalists in Israel feel that momentum is with them.</p><p>"The Temple Mount is ours. It's in our hands!" chanted Israel's far-right National Security Minister Itamar Ben-Gvir, in a widely circulated video from last month's Jerusalem Day march, after he led a group of flag-waving Israeli nationalists through East Jerusalem, including the Old City's Muslim quarter, and up to the al-Aqsa compound.</p><p>The hugely controversial member of Benjamin Netanyahu's coalition government is a regular visitor to al-Aqsa.</p><p>In the video, he sings songs and unfurls an Israeli flag in complete contravention of the Status Quo.</p><p>But for Ben-Gvir, who has already used his ministerial office to permit Jewish prayers and songs in parts of the compound, it's just the start of increasing Jewish and Israeli control of the site.</p><p>More than 25 years ago, in September 2000, the right-wing Israeli nationalist politician, Ariel Sharon, did what was then unthinkable. Accompanied by hundreds of armed Israeli police officers, the leader of the opposition Likud Party walked through the Old City up on to the al-Aqsa compound.</p><p>It was widely regarded as a deliberately provocative and inflammatory act and one of the sparks that lit the second Palestinian intifada, or uprising, also known as the al-Aqsa intifada. In the following five years, more than 4,000 people were killed in violence across Israel and the occupied West Bank and Gaza Strip.</p><p>It is not difficult to envisage a scenario where the pressures today to radically change the running and ownership of the most politically sensitive piece of real estate on the planet could lead to a similarly disastrous outcome.</p><p>Copyright 2026 BBC. All rights reserved. The BBC is not responsible for the content of external sites. Read about our approach to external linking.</p></div></div><div class="av" id="av-2"><span class="backbtn" onclick="backToNews()">&lsaquo; News</span><div class="asrc">BBC News</div><div class="atitle">'They came with machetes' - deadline looms for migrants to leave South Africa</div><div class="abody"><p>South Africa has become a hostile place for undocumented migrants, as a deadline set by protesters for them to leave the country approaches.</p><p>"I am very scared and traumatised," Esnat Joseph, a 36-year-old Malawian woman, told the BBC as she tried to comfort her crying one-year-old triplets.</p><p>She fled her home in an informal settlement in the port city of Durban, in KwaZulu-Natal province, seeking refuge in an open field where up to 7,000 foreigners - mainly Malawians - began gathering with their belongings two weeks ago.</p><p>"The people came to my house and told me: 'You must leave. We don't want you people to stay here any longer, so you have to go to your country.' There were 10 and they were carrying weapons," she said, describing how the group of South African men were holding machetes and whips.</p><p>"They cut my husband on his head and his neck. They were holding his neck like they wanted to kill him. Because of God he still survived, but he's in the hospital."</p><p>Many others at the field, where aid groups have been giving out blankets and food, report such door-to-door intimidation.</p><p>It follows a series of mainly peaceful protests this year led by the anti-migrant group March and March, opposition party ActionSA and others which have set 30 June as the deadline for undocumented migrants to leave.</p><p>Sticks in hand, the marchers have been chanting "Mabahambe" - a Zulu phrase meaning "They must go".</p><p>As the countdown continues, President Cyril Ramaphosa warned South Africans on Tuesday that the "scapegoating of vulnerable people" was not the solution to country's complex economic challenges.</p><p>Joseph came to South Africa three years ago and was working as a domestic servant before having her children.</p><p>Her legal status is not clear - she says she lost her passport and other paperwork in a robbery. She aims to go back to Malawi on one of the buses the Malawian consulate has been arranging with the help of donations for its desperate citizens to leave Durban.</p><p>Ghana, Mozambique, Nigeria and Zimbabwe have also been organising repatriations by air or bus over the last few weeks - with about 3,500 foreigners volunteering to leave so far.</p><p>The South African authorities said the more than 500 Nigerians recently repatriated had been in the country illegally, although this was disputed by the Nigerian authorities.</p><p>Arriving in Lagos last week after nearly nine years in South Africa, Benjamin, a returnee who only gave his first name, told the BBC: "South Africans don't like foreigners, especially Nigerians. South Africa is not a place to be - it's a place you can lose your life at any time."</p><p>Protest organisers deny their actions are xenophobic. They say they are sick of other Africans abusing the system and, as March and March leader Jacinta Ngobese-Zuma put it, "playing the victim card".</p><p>"If you come into South Africa with a passport that allows you to stay for 30 days. When it's 50 days, when it's two years, when it's five years, you know you're breaking the law," she told the BBC at one protest in Durban.</p><p>"We can't have South Africa being turned into a refugee site for all failed African states… every country prioritises its citizens and we want the South African government to do the same."</p><p>Latest figures show South Africa is home to more than three million foreigners, about 5% of the population - most from neighbouring countries in southern Africa.</p><p>But the statistics do not record the many more migrants believed to be in the country without papers - a bone of contention for the protesters.</p><p>Their anger is rooted in growing hardship as the country grapples with growing youth unemployment and economic inequality.</p><p>South Africa has one of the highest rates of unemployment in the world at 32.7%, according to Statistics South Africa, which recorded 350,000 job losses in the first quarter of 2026 - the majority of whom are young people.</p><p>However, the continent's most-developed economy remains a magnet for citizens of poorer countries who risk their lives to go there to seek work such as security guards and domestic servants.</p><p>Protesters, like Mecha Ramorola, also point to the country's strained public services with South African "people fighting for scarce resources".</p><p>"We are struggling to get our children into schools. We are struggling to get our old people into hospitals," Ramorola told the BBC during a march in the capital, Pretoria.</p><p>But there are fears these protests could lead to a repeat of the violence that broke out in 2008, when 62 people, including 21 South Africans, were killed in riots that forced thousands from their homes. There were also outbreaks of xenophobic violence in 2015, 2016 and 2019.</p><p>Last month the Mozambique government said five of its citizens had been killed in xenophobic attacks in Western Cape province. South Africa's foreign minister disputed this, saying two Mozambicans had died and that the circumstances of their deaths were being investigated.</p><p>Videos on social media are fuelling the hostility towards foreigners.</p><p>In one, a Ghanaian man is harassed by protesters telling him to go home, which prompted Ghana to summon South Africa's ambassador to demand better protection for foreign nationals.</p><p>Another widely shared one shows prominent protester Nkosikhona Ndabandaba, popularly known as Phakel'umthakathi and who has 1.4 million followers on Facebook, approaching a man standing by the roadside and asking him his nationality.</p><p>When he replies that he is Congolese, Ndabandaba - wearing his trademark Zulu headdress - tells him in a polite tone but without inquiring about his legal status: "30 June is the deadline, but it's not that you have to leave on 30 June. Leave now."</p><p>But foreigners living in the country legally say they are also being targeted - some are camping outside Durban's Home Affairs office for protection.</p><p>"I have my own document that recognises my refugee status in South Africa, but all of us are still being chased away," a Burundian woman, who was there with her four children, told the BBC.</p><p>"I am very afraid for my life. The children are afraid. There is no respect. When you pass by here, you are insulted. The children are insulted even at school," she said as she wrapped herself in a blanket to shelter from the cold of the southern hemisphere winter.</p><p>Just going to the shops can be intimidating these days, a Malawian beauty therapist in Cape Town, who has lived in South Africa for 16 years without legal status, told the BBC.</p><p>She, her husband and their nine-year-old daughter had a scary incident in a taxi on the way to a shopping centre: "We were in an Uber, just the three of us, and we were being asked by an Uber driver where are your papers? Where are you from? You sound different."</p><p>The beauty therapist says she can understand why Ramaphosa recently set out an action plan to deal with illegal migration - but stressed that human beings, legal or not, had a right to safety.</p><p>"My child is not even going to school because we're scared. We're terrified of what would happen now."</p><p>In a special national address earlier this month, the president warned that no individual or group had the right to demand proof of nationality from people in public spaces and said government would act against them.</p><p>"There is no space for xenophobia, racism, sexism, Afrophobia or any other forms of intolerance in South Africa," he said, explaining his coalition government's five-point strategy to deal with the crisis.</p><p>These include refusing asylum claims from people who had travelled through other "safe" countries, the introduction of a quota for the naturalisation of citizens and extending the reach of digital IDs to non-citizens.</p><p>There will also be jail terms for employers who give low-paying jobs to undocumented migrants.</p><p>"You find an immigrant being employed in jobs that a South African will ordinarily not accept, or that pays less than what the government demands, because one, they're desperate, two, they're open to abuse in being short changed," analyst Prof Shepherd Mpofu told the BBC.</p><p>Ramaphosa said efforts would also be made to crack down on corruption within the system.</p><p>A 36-year-old Malawian woman in Johannesburg, who asked not to be named for fear of reprisal, told the BBC that she came to South Africa on a visitor's visa and had been bribing border officials to stamp her passport for a fee every couple of months without crossing the border.</p><p>"I have decided to go back home for a while and close down my hair salon because of threats," she said, explaining that she feared for her young children's safety.</p><p>The latest spike in protests comes as political parties seek support ahead of local government elections in November.</p><p>Some unscrupulous politicians have been using misinformation to fuel fear and anger over illegal migration - sharing old videos and confusing the narrative.</p><p>A debunked claim that South Africa has 15 million undocumented migrants, first popularised five years ago by ActionSA leader Herman Mashaba, who is campaigning to become mayor of Johannesburg, keeps resurfacing.</p><p>"Political parties are scraping the bottom of the barrel in trying to lie to people that all our problems are the migrants, and if we get rid of the migrants, then we'll have no problems in South Africa," says Sharon Ekambaram, a human rights lawyer and member of the Kopanang Africa Against Xenophobia movement.</p><p>"This has been an ongoing phenomenon in South Africa and more recently, it has been associated with elections."</p><p>The government keeps pushing back - its ministerial task team on migration saying this week that 40,000 illegal immigrants have been arrested so far this year for contravening the Immigration Act.</p><p>The public face of this - known as Operation New Broom - can be seen in downtown Johannesburg where for the last few months excavators have been demolishing informal corrugated iron shops set up on pavements.</p><p>Officials see the areas as possible "hot spots" for criminals and illegal migrants.</p><p>On the day I visited, Ethiopian migrants looked on at horror at the destruction - though they had been warned by the authorities.</p><p>Such measures as well as the protests are leaving many migrants feeling like the walls are closing in.</p><p>uMkhonto we Sizwe (MK), the country's third largest party led by former President Jacob Zuma and which has a lot of support in KwaZulu-Natal, has not backed the deadline for migrants to leave - but endorses its sentiments.</p><p>"We all agree that undocumented migrants are breaking the law… They must leave our country peacefully without any violence or intimidation," MK member Bonginkosi Khanyile told the BBC.</p><p>Nonetheless there is a tangible fear nationwide given the ominous warning from Ndabandaba, one of the main protesters.</p><p>"On 30 June I can't control the people of South Africa," he said.</p><p>Lines of vehicles are reportedly backed up at Mozambique's border post with foreigners anxious to leave.</p><p>Back at the field in Durban, terrified Malawians - most, according to officials, without papers - cannot wait to get out.</p><p>When the first bus arrived to evacuate some of them on Sunday, the crowds chanted in Zulu "Siyahamba", meaning "We're leaving".</p><p>Additional reporting by Thuthuka Zondi</p><p>Go to BBCAfrica.com for more news from the African continent.</p><p>Follow us on Twitter @BBCAfrica, on Facebook at BBC Africa or on Instagram at bbcafrica</p><p>Copyright 2026 BBC. All rights reserved. The BBC is not responsible for the content of external sites. Read about our approach to external linking.</p></div></div><div class="av" id="av-3"><span class="backbtn" onclick="backToNews()">&lsaquo; News</span><div class="asrc">BBC News</div><div class="atitle">Search for six-year-old Ebola patient after armed men storm DR Congo hospital</div><div class="abody"><p>Authorities in eastern Democratic Republic of Congo are searching for a six-year-old Ebola patient and her mother after armed men stormed the hospital where they were being treated.</p><p>The child was taken from Wanamahika Hospital, in the city of Butembo, by "very angry" men with knives, local health official Dr Lubambo Maboko Gaston said in a statement.</p><p>It is unclear whether the men were known to the child, but suspicion and fear surrounding Ebola treatment centres have been rife during the current outbreak.</p><p>In an interview with the Reuters news agency, Gaston urged the child and her mother to go to a health centre, as they risked "worsening their health" and "infecting their relatives".</p><p>Ebola treatment facilities have come under attack multiple times during the ongoing outbreak, in which almost 200 deaths and 840 cases have been confirmed.</p><p>Last month, police in the town of Mongbwalu fired shots in the air after angry crowds attempted to reclaim the bodies of loved ones who had died at a health facility.</p><p>Days before, crowds set fire to isolation tents in hospital in Rwampara - a town 85km (53 miles) south-east of Mongbwalu - after they were prevented from taking the body of a man thought to have died from Ebola.</p><p>The body of a dead Ebola victim is highly infectious and can lead to the virus spreading further when prepared for burial.</p><p>"People are not properly informed or sensitised about what is happening. For a certain segment of the population, especially in remote areas, Ebola is an invention by outsiders - it does not exist," local politician Luc Malembe Malembe told the BBC last month.</p><p>"They believe it is the NGOs and hospitals creating this to make money, and this is tragic."</p><p>The outbreak has been caused by a rare species of Ebola known as Bundibugyo. There is currently no vaccine for this species and the World Health Organisation has said it could take months for a jab to be ready.</p><p>Cases are currently concentrated in the provinces of Ituri, South Kivu and North Kivu, where the six-year-old girl was taken from the hospital on Monday.</p><p>Ituri remains the main centre of transmission.</p><p>The WHO has warned that conflict in eastern DR Congo is making it more difficult to tackle the Ebola outbreak. The M23 rebel group is in control of large parts of both North and South Kivu.</p><p>Go to BBCAfrica.com for more news from the African continent.</p><p>Follow us on Twitter @BBCAfrica, on Facebook at BBC Africa or on Instagram at bbcafrica</p><p>Copyright 2026 BBC. All rights reserved. The BBC is not responsible for the content of external sites. Read about our approach to external linking.</p></div></div><div class="av" id="av-4"><span class="backbtn" onclick="backToNews()">&lsaquo; News</span><div class="asrc">BBC News</div><div class="atitle">Group planned to attack White House UFC event using snipers and drones, FBI says</div><div class="abody"><p>The FBI thwarted a plot targeting Sunday's UFC event at the White House and has arrested five men, the US justice department said on Tuesday.</p><p>Part of the plan involved striking nearby buildings with explosive-laden drones and firing on "high value targets", prosecutors alleged.</p><p>One suspect was arrested in Ohio last week, where investigators reviewed encrypted messages involving other alleged conspirators. Prosecutors said in charging documents they had allegedly "expressed ultra-religious and antigovernment sentiments".</p><p>"Allegedly planned attacks were stopped cold," FBI Director Kash Patel posted on  social media on Tuesday about the "multi-state operation".</p><p>The suspects were identified as Tycen C Proper, 19, the suspect arrested in Ohio, along with Bryan Omar Roa, 24, and Michael Alan Thomas, 32, of California, Daniel K Eskridge, 32, of Missouri and Abraham Hermosillo Alvarez, 31, of Nebraska. They were arrested across the four US states and each have been charged with conspiracy to commit murder, the Department of Justice (DOJ) said in a statement.</p><p>By using the drones, the plotters aimed to spark panic and draw the fleeing crowd toward a sniper team, according to the court documents. A "second wave" of attackers was then allegedly supposed to storm the White House gate.</p><p>An estimated 4,300 people were present for the invite-only event on the South Lawn - and another 85,000 were able to watch nearby - during the back-to-back fights on Sunday.</p><p>Court filings related to Alvarez said the group allegedly eyed potential targets that included US President Donald Trump, Vice President JD Vance, Israeli Prime Minister Benjamin Netanyahu and Elon Musk, as well as several elected officials -  though not all attended the UFC event.</p><p>The plot was discovered through Proper. His mother called local authorities late on 10 June - just days before the high-profile event - because she was concerned about his large firearms purchases and what she had seen of his online communication with a group that claimed to be made up of former military members and Christian-based.</p><p>The group allegedly wanted to "jumpstart" a revolution by shooting "high-value targets" - identified as wealthy people and politicians - attending the UFC fight. They had specifically discussed "grievances about government corruption, the handling of the Epstein files, data centers taking up all the water in communities, and other government actions," prosecutors said.</p><p>During an FBI interview on 11 June,  Proper admitted to being part of planning the attack and said the group began communicating with one another around March  through a TikTok group called "Vanguard of the Old", which is named in some court documents as "Vanguard of the Old Republic".</p><p>It is unclear if the group is affiliated with any larger, established organisation. But Proper told law enforcement officials that members were primarily recruited through TikTok.</p><p>The DOJ said Alvarez was responsible for planning, organising and directing the planned UFC attack, and that he worked on drones.</p><p>The suspects also distributed maps of Washington highlighting planned sniper locations and drone launch points and identifying power grids as potential targets, court documents said.</p><p>The BBC has contacted Proper's lawyer.</p><p>Each suspect faces a maximum penalty of life in prison and a $250,000 (£186,122) fine if convicted of conspiracy to murder, the DOJ said.</p><p>Proper faces three additional charges, according to court filings, including the charge of conspiracy to commit violence on White House grounds, which carries a maximum penalty of five years in prison.</p><p>A preliminary hearing has been scheduled for 29 June.</p><p>On Sunday, as part of the celebration of the nation's 250th anniversary, the White House hosted a series of Ultimate Fighting Championship (UFC) matches in an outdoor arena.</p><p>The event coincided with Trump's 80th birthday, and came two months after a shooting at the White House Correspondents Dinner that he attended and one month after a man was killed by Secret Service agents after opening fire at a White House checkpoint.</p><p>With additional reporting by Nardine Saad</p><p>Follow the twists and turns of Trump's second term with North America correspondent Anthony Zurcher's weekly US Politics Unspun newsletter. Readers in the UK can sign up here. Those outside the UK can sign up here.</p><p>Copyright 2026 BBC. All rights reserved. The BBC is not responsible for the content of external sites. Read about our approach to external linking.</p></div></div></div>
-<div id="tab-github" class="tab"><div class="empty">Add GITHUB_TOKEN to config.py to enable.</div></div>
+<div id="tab-news" class="tab"><div id="nl"><h2>World News</h2><div id="world-news"><div class="nitem paged-item"><div class="ntitle" onclick="openArticle(0)">Iran sends tankers loaded with oil past US military blockade</div><div class="nsrc">BBC News</div><div class="nact"><span onclick="openArticle(0)">Read</span><span onclick="saveArticle('Iran sends tankers loaded with oil past US military blockade','BBC News','Three Iranian tankers loaded with crude oil have passed the US blockade line in the Gulf of Oman, ship-tracking data shows.')">Read Later</span></div></div><div class="nitem paged-item"><div class="ntitle" onclick="openArticle(1)">Status quo at Jerusalem's holiest site under threat as Israeli nationalists flout rules</div><div class="nsrc">BBC News</div><div class="nact"><span onclick="openArticle(1)">Read</span><span onclick="saveArticle('Status quo at Jerusalem\'s holiest site under threat as Israeli nationalists flout rules','BBC News','Israeli nationalists are increasingly flouting a convention on how faiths share the al-Aqsa mosque compound.')">Read Later</span></div></div><div class="nitem paged-item"><div class="ntitle" onclick="openArticle(2)">Search for six-year-old Ebola patient after armed men storm DR Congo hospital</div><div class="nsrc">BBC News</div><div class="nact"><span onclick="openArticle(2)">Read</span><span onclick="saveArticle('Search for six-year-old Ebola patient after armed men storm DR Congo hospital','BBC News','Health facilities have come under attack during the current outbreak as a result of misinformation and fear.')">Read Later</span></div></div><div class="nitem paged-item"><div class="ntitle" onclick="openArticle(3)">Israel launches fresh strikes on Lebanon despite Trump criticism</div><div class="nsrc">BBC News</div><div class="nact"><span onclick="openArticle(3)">Read</span><span onclick="saveArticle('Israel launches fresh strikes on Lebanon despite Trump criticism','BBC News','Speaking on Tuesday, Trump said Israel\'s PM Benjamin Netanyahu needed &quot;to be more responsible with respect to Lebanon&quot;.')">Read Later</span></div></div><div class="pgbar" id="pg-world-news"></div></div><script>initPager("world-news",4);</script><h2 style="margin-top:28px">Hacker News</h2><div id="hn-list"><div class="nitem paged-item"><div class="ntitle">Epic Games announces Lore version control system</div><div class="hnscore">533 pts &middot; regnerba</div></div><div class="nitem paged-item"><div class="ntitle">Only 16 Percent of Americans Think AI Will Have a Positive Impact on Society</div><div class="hnscore">99 pts &middot; karakoram</div></div><div class="nitem paged-item"><div class="ntitle">US holds off blacklisting DeepSeek, more than 100 firms deemed security risks</div><div class="hnscore">79 pts &middot; giuliomagnifico</div></div><div class="nitem paged-item"><div class="ntitle">Show HN: An 8-bit live gamecast for baseball</div><div class="hnscore">78 pts &middot; brownrout</div></div><div class="nitem paged-item"><div class="ntitle">Launch HN: Adam (YC W25) – Open-Source AI CAD</div><div class="hnscore">55 pts &middot; zachdive</div></div><div class="nitem paged-item"><div class="ntitle">GLM-5.2 is the new leading open weights model on Artificial Analysis</div><div class="hnscore">600 pts &middot; himata4113</div></div><div class="nitem paged-item"><div class="ntitle">Sixty percent of US consumers say 'AI' in brand messaging is a turnoff</div><div class="hnscore">797 pts &middot; thm</div></div><div class="nitem paged-item"><div class="ntitle">Trellis AI (YC W24)  hiring a product lead to build agents for healthcare access</div><div class="hnscore">1 pts &middot; macklinkachorn</div></div><div class="nitem paged-item"><div class="ntitle">French physicist and media star loses doctorate after plagiarism investigation</div><div class="hnscore">94 pts &middot; bookofjoe</div></div><div class="nitem paged-item"><div class="ntitle">RFC 10008: The new HTTP Query Method</div><div class="hnscore">222 pts &middot; schappim</div></div><div class="pgbar" id="pg-hn-list"></div></div><script>initPager("hn-list",8);</script></div><div class="av" id="av-0"><span class="backbtn" onclick="backToNews()">&lsaquo; News</span><div class="asrc">BBC News</div><div class="atitle">Iran sends tankers loaded with oil past US military blockade</div><div class="abody"><p>Three Iranian tankers loaded with crude oil have passed the US blockade line in the Gulf of Oman, ship-tracking data shows.</p></div></div><div class="av" id="av-1"><span class="backbtn" onclick="backToNews()">&lsaquo; News</span><div class="asrc">BBC News</div><div class="atitle">Status quo at Jerusalem's holiest site under threat as Israeli nationalists flout rules</div><div class="abody"><p>Israeli nationalists are increasingly flouting a convention on how faiths share the al-Aqsa mosque compound.</p></div></div><div class="av" id="av-2"><span class="backbtn" onclick="backToNews()">&lsaquo; News</span><div class="asrc">BBC News</div><div class="atitle">Search for six-year-old Ebola patient after armed men storm DR Congo hospital</div><div class="abody"><p>Health facilities have come under attack during the current outbreak as a result of misinformation and fear.</p></div></div><div class="av" id="av-3"><span class="backbtn" onclick="backToNews()">&lsaquo; News</span><div class="asrc">BBC News</div><div class="atitle">Israel launches fresh strikes on Lebanon despite Trump criticism</div><div class="abody"><p>Speaking on Tuesday, Trump said Israel's PM Benjamin Netanyahu needed &quot;to be more responsible with respect to Lebanon&quot;.</p></div></div></div>
+<div id="tab-saved" class="tab">
+<h2>Saved Articles</h2>
+<div id="saved-list"><div class="saved-empty">Loading&hellip;</div></div>
+</div>
+<div id="tab-github" class="tab"><div class="empty">Add GITHUB_TOKEN secret to GitHub Actions.</div></div>
 
 </div>
-<div id="curtab">Weather</div>
-<div id="mbtn" onclick="toggleMenu()">&#9776;</div>
-<div id="menu"><div class="mitem" data-tab="weather" onclick="goTab('weather')">Weather</div><div class="mitem" data-tab="bot" onclick="goTab('bot')">Outreach Bot</div><div class="mitem" data-tab="day" onclick="goTab('day')">Day</div><div class="mitem" data-tab="rates" onclick="goTab('rates')">Rates</div><div class="mitem" data-tab="claude" onclick="goTab('claude')">Claude</div><div class="mitem" data-tab="news" onclick="goTab('news')">News</div><div class="mitem" data-tab="github" onclick="goTab('github')">GitHub</div></div>
 <script>
-var _curtab = 'weather';
-var _tabnames = {weather:'Weather',bot:'Outreach Bot',day:'Day',
-                 rates:'Rates',claude:'Claude',news:'News',github:'GitHub'};
+var _curtab='weather';
+var _tabnames={weather:'Weather',bot:'Outreach Bot',day:'Day',
+               claude:'Claude',news:'News',saved:'Saved',github:'GitHub'};
+var _tabOrder=['weather','bot','day','claude','news','saved','github'];
 
 function show(id){
   var t=document.getElementsByClassName('tab');
-  for(var i=0;i<t.length;i++){ t[i].className='tab'; }
+  for(var i=0;i<t.length;i++) t[i].className='tab';
   document.getElementById('tab-'+id).className='tab on';
-  _curtab = id;
-  document.getElementById('curtab').innerHTML = _tabnames[id] || id;
+  _curtab=id;
+  document.getElementById('curtab').innerHTML=_tabnames[id]||id;
+  var btns=document.getElementById('nav').getElementsByTagName('button');
+  for(var i=0;i<btns.length;i++) btns[i].className='';
+  var idx=_tabOrder.indexOf(id);
+  if(idx>=0) btns[idx].className='on';
+  if(id==='saved') renderSaved();
   window.scrollTo(0,0);
 }
-function toggleMenu(){
-  var m=document.getElementById('menu');
-  if(m.style.display==='block'){
-    m.style.display='none';
-  } else {
-    var items=m.getElementsByClassName('mitem');
-    for(var i=0;i<items.length;i++){
-      items[i].className='mitem'+(items[i].getAttribute('data-tab')===_curtab?' mon':'');
-    }
-    m.style.display='block';
-  }
-}
-function goTab(id){
-  show(id);
-  document.getElementById('menu').style.display='none';
-}
-function wdetail(on){
-  document.getElementById('w-main').style.display=on?'none':'block';
-  document.getElementById('w-detail').style.display=on?'block':'none';
-  window.scrollTo(0,0);
-}
+
 function openArticle(n){
   document.getElementById('nl').style.display='none';
   var av=document.getElementsByClassName('av');
@@ -255,9 +234,81 @@ function backToNews(){
   window.scrollTo(0,0);
 }
 
+/* Save Later */
+function saveArticle(title, source, summary){
+  var key='saved_'+Date.now();
+  try{
+    localStorage.setItem(key, JSON.stringify({title:title, source:source, body:summary,
+                                              saved_at:new Date().toISOString()}));
+    var btn=event.target; btn.innerHTML='Saved ✓'; btn.style.background='#000'; btn.style.color='#fff';
+  } catch(e){ alert('Could not save: '+e); }
+}
+function deleteSaved(key){
+  localStorage.removeItem(key);
+  renderSaved();
+}
+function renderSaved(){
+  var el=document.getElementById('saved-list');
+  if(!el) return;
+  var items=[];
+  for(var i=0;i<localStorage.length;i++){
+    var k=localStorage.key(i);
+    if(k && k.indexOf('saved_')===0){
+      try{ items.push({key:k, data:JSON.parse(localStorage.getItem(k))}); } catch(e){}
+    }
+  }
+  items.sort(function(a,b){ return b.key>a.key?1:-1; });
+  if(!items.length){
+    el.innerHTML='<div class="saved-empty">No saved articles. Tap Read Later on any news item.</div>';
+    return;
+  }
+  var html='';
+  for(var j=0;j<items.length;j++){
+    var it=items[j]; var d=it.data;
+    html+='<div class="nitem">';
+    html+='<div class="ntitle">'+esc(d.title||'')+'</div>';
+    html+='<div class="nsrc">'+esc(d.source||'')+'</div>';
+    if(d.body) html+='<div class="abody" style="margin-top:10px;font-size:18px">'+d.body.substring(0,400)+'&hellip;</div>';
+    html+='<div class="nact"><span onclick="deleteSaved(''+it.key+'')">Remove</span></div>';
+    html+='</div>';
+  }
+  el.innerHTML=html;
+}
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* Pagination for news lists */
+var _pages={};
+function initPager(id, pageSize){
+  var items=document.querySelectorAll('#'+id+' .paged-item');
+  if(!items.length) return;
+  _pages[id]={cur:0, size:pageSize, total:items.length};
+  renderPage(id);
+}
+function renderPage(id){
+  var p=_pages[id]; if(!p) return;
+  var items=document.querySelectorAll('#'+id+' .paged-item');
+  var start=p.cur*p.size; var end=start+p.size;
+  for(var i=0;i<items.length;i++)
+    items[i].style.display=(i>=start&&i<end)?'block':'none';
+  var ctrl=document.getElementById('pg-'+id);
+  if(!ctrl) return;
+  var pages=Math.ceil(p.total/p.size);
+  ctrl.innerHTML=(pages>1)?
+    (p.cur>0?'<span class="pgbtn" onclick="changePage(''+id+'',-1)">&lsaquo; Prev</span>':'')+
+    '<span class="pginfo">'+(p.cur+1)+' / '+pages+'</span>'+
+    (p.cur<pages-1?'<span class="pgbtn" onclick="changePage(''+id+'',1)">Next &rsaquo;</span>':'')
+    :'';
+}
+function changePage(id, dir){
+  var p=_pages[id]; if(!p) return;
+  var pages=Math.ceil(p.total/p.size);
+  p.cur=Math.max(0,Math.min(pages-1,p.cur+dir));
+  renderPage(id); window.scrollTo(0,0);
+}
+
 /* Claude session countdown */
-var SESSION_TS = 1781704786;
-var SESSION_DUR = 18000;
+var SESSION_TS=1781718798;
+var SESSION_DUR=18000;
 function updateClaude(){
   var now=Math.floor(Date.now()/1000);
   var elapsed=now-SESSION_TS;
@@ -265,22 +316,20 @@ function updateClaude(){
   if(rem<0) rem=0;
   var h=Math.floor(rem/3600);
   var m=Math.floor((rem%3600)/60);
-  document.getElementById('ctimer').innerHTML=h+'h '+(m<10?'0':'')+m+'m';
+  var el=document.getElementById('ctimer');
+  if(el) el.innerHTML=h+'h '+(m<10?'0':'')+m+'m';
   var pct=Math.min(100,Math.round(elapsed/SESSION_DUR*100));
   var filled=Math.round(pct/5);
   var cells='';
-  for(var i=0;i<20;i++){
+  for(var i=0;i<20;i++)
     cells+='<td style="background:'+(i<filled?'#000':'#e0e0e0')+';height:20px"></td>';
-  }
-  document.getElementById('cbar').innerHTML=cells;
+  var bar=document.getElementById('cbar');
+  if(bar) bar.innerHTML=cells;
   var rt=new Date((SESSION_TS+SESSION_DUR)*1000);
   var rh=rt.getHours(); var rm=rt.getMinutes();
   var ap=rh>=12?'PM':'AM'; rh=rh%12||12;
-  document.getElementById('creset').innerHTML='Resets at '+rh+':'+(rm<10?'0':'')+rm+' '+ap;
-  var st=new Date(SESSION_TS*1000);
-  var sh=st.getHours(); var sm=st.getMinutes();
-  var sap=sh>=12?'PM':'AM'; sh=sh%12||12;
-  document.getElementById('cstart').innerHTML='Started '+sh+':'+(sm<10?'0':'')+sm+' '+sap;
+  var rel=document.getElementById('creset');
+  if(rel) rel.innerHTML='Resets at '+rh+':'+(rm<10?'0':'')+rm+' '+ap;
 }
 updateClaude();
 setInterval(updateClaude,30000);

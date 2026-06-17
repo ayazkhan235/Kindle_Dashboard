@@ -298,16 +298,14 @@ body { font-family:Georgia,serif; background:#fff; color:#000; font-size:20px;
 .tab { display:none; }
 .tab.on { display:block; }
 
-/* header nav */
-.hdr { position:relative; }
-#mbtn { float:right; font-size:26px; cursor:pointer; padding:0 0 0 20px;
-        color:#000; letter-spacing:0; text-transform:none; }
-#menu { display:none; position:absolute; top:100%; right:0; left:0;
-        background:#fff; border:2px solid #000; z-index:200;
-        margin-top:10px; }
-.mitem { display:block; padding:20px 26px; font-size:22px;
-         border-bottom:1px solid #ddd; cursor:pointer; }
-.mitem.mon { font-weight:bold; background:#f8f8f8; }
+/* bottom nav */
+#nav { position:fixed; bottom:0; left:0; right:0; background:#fff;
+       border-top:2px solid #000; display:table; width:100%; z-index:200; }
+#nav button { display:table-cell; text-align:center; padding:14px 2px;
+              font-size:14px; letter-spacing:0; text-transform:uppercase;
+              font-family:Georgia,serif; border:none; background:none;
+              cursor:pointer; color:#555; width:14.28%; }
+#nav button.on { font-weight:bold; color:#000; background:#f0f0f0; }
 
 /* weather */
 .hero { border-bottom:3px double #000; padding-bottom:16px; margin-bottom:16px; }
@@ -409,7 +407,8 @@ h2:first-child { margin-top:0; }
 JS_TEMPLATE = """
 var _curtab='weather';
 var _tabnames={weather:'Weather',bot:'Outreach Bot',day:'Day',
-               claude:'Claude',news:'News',saved:'Saved',github:'GitHub',trader:'Trader'};
+               claude:'Claude',news:'News',saved:'Saved',github:'GitHub'};
+var _tabOrder=['weather','bot','day','claude','news','saved','github'];
 
 function show(id){
   var t=document.getElementsByClassName('tab');
@@ -417,22 +416,13 @@ function show(id){
   document.getElementById('tab-'+id).className='tab on';
   _curtab=id;
   document.getElementById('curtab').innerHTML=_tabnames[id]||id;
+  var btns=document.getElementById('nav').getElementsByTagName('button');
+  for(var i=0;i<btns.length;i++) btns[i].className='';
+  var idx=_tabOrder.indexOf(id);
+  if(idx>=0) btns[idx].className='on';
   if(id==='saved') renderSaved();
   window.scrollTo(0,0);
 }
-function toggleMenu(){
-  var m=document.getElementById('menu');
-  if(m.style.display==='block'){
-    m.style.display='none';
-  } else {
-    var items=m.getElementsByClassName('mitem');
-    for(var i=0;i<items.length;i++){
-      items[i].className='mitem'+(items[i].getAttribute('data-tab')===_curtab?' mon':'');
-    }
-    m.style.display='block';
-  }
-}
-function goTab(id){ show(id); document.getElementById('menu').style.display='none'; }
 
 function openArticle(n){
   document.getElementById('nl').style.display='none';
@@ -590,14 +580,6 @@ def bot_tab(private, forex, pharma_items):
     else:
         fu = o.get("followups_due", 0)
         fu_cls = ' class="inv"' if fu and fu != "--" and int(str(fu)) > 0 else ""
-        ev_rows = "".join(
-            '<tr><td class="hh">%s</td><td>%s</td><td>%s</td></tr>' % (
-                esc(ev["date"]), esc(ev["type"]), esc(ev["company"]))
-            for ev in o.get("events", []))
-        events_html = ("""<h2>Recent Activity</h2>
-<table class="htab">
-  <tr><th>Date</th><th>Event</th><th>Company</th></tr>%s
-</table>""" % ev_rows) if ev_rows else ""
         stats_html = """
 <table class="sgrid">
   <tr>
@@ -614,11 +596,10 @@ def bot_tab(private, forex, pharma_items):
 <table class="full">
   <tr%s><td><div class="sl">Follow-ups Due Today</div><div class="sv">%s</div></td></tr>
   <tr><td><div class="sl">Bounced</div><div class="sv">%s</div></td></tr>
-</table>
-%s""" % (o.get("today_sent","--"), o.get("in_pipeline","--"),
-          o.get("open_rate","--"), o.get("reply_rate","--"),
-          o.get("pending","--"), o.get("opens","--"),
-          fu_cls, fu, o.get("bounced","--"), events_html)
+</table>""" % (o.get("today_sent","--"), o.get("in_pipeline","--"),
+               o.get("open_rate","--"), o.get("reply_rate","--"),
+               o.get("pending","--"), o.get("opens","--"),
+               fu_cls, fu, o.get("bounced","--"))
 
     pharma_items_html = "".join(
         '<div class="pulse-item paged-item">'
@@ -633,8 +614,11 @@ def bot_tab(private, forex, pharma_items):
     ) if pharma_items_html else ""
 
     return """
-<div class="sync">Mac synced: %s &nbsp;&bull;&nbsp; USD &#8377;%s &nbsp;&bull;&nbsp; EUR &#8377;%s</div>
-<h2>Outreach Bot</h2>
+<div class="sync">Mac synced: %s</div>
+<h2>Rates</h2>
+<div class="rate">USD / INR &nbsp; <b>&#8377;%s</b></div>
+<div class="rate">EUR / INR &nbsp; <b>&#8377;%s</b></div>
+<h2 style="margin-top:28px">Outreach Bot</h2>
 %s
 %s
 """ % (synced, forex["usd_inr"], forex["eur_inr"], stats_html, industry_section)
@@ -846,20 +830,19 @@ def main():
         "news":    news_tab(news, hn),
         "saved":   saved_tab(),
         "github":  github_tab(gh),
-        "trader":  trader_tab(algo),
     }
-    tab_order  = ["weather","bot","day","claude","news","saved","github","trader"]
-    tab_labels = {"weather":"Weather","bot":"Outreach Bot","day":"Day","claude":"Claude",
-                  "news":"News","saved":"Saved","github":"GitHub","trader":"Trader"}
+    tab_order  = ["weather","bot","day","claude","news","saved","github"]
+    tab_labels = ["Wthr","Bot","Day","Claude","News","Saved","Git"]
 
     tabs_divs = "".join(
         '<div id="tab-%s" class="%s">%s</div>\n' % (
             tid, "tab on" if tid == "weather" else "tab", tabs[tid])
         for tid in tab_order)
 
-    menu_items = "".join(
-        '<div class="mitem" data-tab="%s" onclick="goTab(\'%s\')">%s</div>' % (tid, tid, label)
-        for tid, label in tab_labels.items())
+    nav_btns = "".join(
+        '<button onclick="show(\'%s\')" %s>%s</button>' % (
+            tid, 'class="on"' if tid == "weather" else "", label)
+        for tid, label in zip(tab_order, tab_labels))
 
     updated = datetime.now().strftime("%a %d %b %H:%M UTC")
     js = JS_TEMPLATE % session_ts
@@ -874,14 +857,14 @@ def main():
 </head><body>
 <div id="wrap">
 <div class="hdr">
-  <span id="mbtn" onclick="toggleMenu()">&#9776;</span>
-  Dashboard <span class="r">%s</span>
-  <div id="menu">%s</div>
+  <span id="curtab">Weather</span>
+  <span class="r">%s</span>
 </div>
+<div id="nav">%s</div>
 %s
 </div>
 <script>%s</script>
-</body></html>""" % (CSS, updated, menu_items, tabs_divs, js)
+</body></html>""" % (CSS, updated, nav_btns, tabs_divs, js)
 
     out = OUT_DIR / "index.html"
     out.write_text(html, encoding="utf-8")
