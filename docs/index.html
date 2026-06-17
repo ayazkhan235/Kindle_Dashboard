@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<meta http-equiv="refresh" content="3600">
+<title>Dashboard</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:Georgia,serif; background:#fff; color:#000; font-size:20px;
+       -webkit-user-select:none; user-select:none; }
+#wrap { padding:20px 26px 80px 26px; max-width:1072px; margin:0 auto; }
+.hdr { font-size:13px; letter-spacing:2px; text-transform:uppercase; color:#888;
+       border-bottom:1px solid #000; padding-bottom:10px; margin-bottom:16px; }
+.hdr .r { float:right; }
+.tab { display:none; }
+.tab.on { display:block; }
+
+/* bottom bar */
+#curtab { position:fixed; left:0; right:80px; bottom:0; height:70px; background:#000;
+          color:#888; font-size:13px; letter-spacing:2px; text-transform:uppercase;
+          line-height:70px; padding-left:22px; }
+#mbtn { position:fixed; right:0; bottom:0; width:80px; height:70px; background:#111;
+        color:#fff; font-size:32px; line-height:70px; text-align:center; cursor:pointer;
+        border-left:1px solid #333; }
+#menu { display:none; position:fixed; left:0; right:0; bottom:70px;
+        background:#fff; border-top:3px solid #000; z-index:200; }
+.mitem { display:block; padding:20px 26px; font-size:22px;
+         border-bottom:1px solid #ddd; cursor:pointer; }
+.mitem.mon { font-weight:bold; background:#f8f8f8; }
+
+/* weather */
+.hero { border-bottom:3px double #000; padding-bottom:16px; margin-bottom:16px; }
+.temp { font-size:120px; font-weight:bold; line-height:0.85; letter-spacing:-4px;
+        display:inline-block; vertical-align:top; }
+.wright { display:inline-block; vertical-align:top; margin-left:22px; margin-top:10px; }
+.cond { font-size:30px; font-style:italic; }
+.wsub { font-size:18px; color:#555; margin-top:8px; }
+.hilo { font-size:22px; margin-top:10px; }
+.hilo b { font-size:26px; }
+.wgrid { width:100%; border-collapse:collapse; margin:0 0 20px; }
+.wgrid td { border:1px solid #ccc; padding:12px 10px; width:25%; }
+.wlabel { font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#999; }
+.wval { font-size:22px; font-weight:bold; margin-top:4px; }
+.ttab { width:100%; border-collapse:collapse; }
+.ttab td { text-align:center; padding:8px 2px; }
+.ttab .tval { font-size:20px; font-weight:bold; }
+.ttab .thr { font-size:13px; color:#999; }
+.rainh { font-size:13px; text-transform:uppercase; letter-spacing:2px; color:#888;
+         border-bottom:2px solid #000; padding-bottom:5px; margin:0 0 12px; }
+
+/* shared */
+h2 { font-size:13px; text-transform:uppercase; letter-spacing:3px; border-bottom:2px solid #000;
+     padding-bottom:5px; margin:24px 0 14px; }
+h2:first-child { margin-top:0; }
+.row { padding:14px 0; border-bottom:1px solid #ddd; }
+.row .t { font-size:21px; font-weight:bold; }
+.row .s { font-size:15px; color:#777; margin-top:3px; }
+.empty { color:#aaa; font-style:italic; padding:14px 0; font-size:18px; }
+.sync { font-size:13px; color:#bbb; margin-bottom:16px; }
+.rate { font-size:28px; margin:12px 0; }
+.rate b { font-size:32px; }
+
+/* bot stats */
+.sgrid { width:100%; border-collapse:collapse; margin-bottom:6px; }
+.sgrid td { border:1px solid #ccc; padding:12px 10px; width:50%; vertical-align:top; }
+.sl { font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#999; }
+.sv { font-size:36px; font-weight:bold; margin-top:4px; line-height:1; }
+.full { width:100%; border-collapse:collapse; margin-bottom:6px; }
+.full td { border:1px solid #ccc; padding:12px 10px; }
+.inv { background:#000; color:#fff; }
+.inv .sl { color:#aaa; }
+.htab { width:100%; border-collapse:collapse; margin-top:4px; }
+.htab th { font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#999;
+           text-align:left; padding:6px 8px; border-bottom:2px solid #000; }
+.htab td { padding:10px 8px; border-bottom:1px solid #e2e2e2; font-size:19px; }
+.htab .hh { font-weight:bold; }
+
+/* claude */
+.ctimer { font-size:96px; font-weight:bold; line-height:1; letter-spacing:-3px;
+          text-align:center; padding:36px 0 8px; }
+.csub { font-size:22px; color:#777; text-align:center; margin-bottom:32px; }
+.cbar { width:100%; border-collapse:collapse; margin-bottom:24px; }
+.cbar td { height:20px; }
+.cmeta { font-size:18px; color:#555; text-align:center; line-height:1.9; }
+
+/* news + save later */
+.nitem { padding:18px 0; border-bottom:1px solid #ddd; }
+.ntitle { font-size:22px; font-weight:bold; line-height:1.3; }
+.nsrc { font-size:13px; color:#999; margin-top:4px; text-transform:uppercase; letter-spacing:1px; }
+.nact { font-size:14px; color:#555; margin-top:8px; }
+.nact span { border:1px solid #999; padding:4px 12px; margin-right:8px; cursor:pointer; }
+.av { display:none; }
+.backbtn { display:inline-block; background:#000; color:#fff; font-size:15px;
+           padding:9px 18px; margin-bottom:18px; letter-spacing:1px; cursor:pointer; }
+.atitle { font-size:26px; font-weight:bold; line-height:1.3; margin-bottom:12px; }
+.asrc { font-size:13px; color:#999; margin-bottom:14px; text-transform:uppercase; letter-spacing:1px; }
+.abody { font-size:20px; line-height:1.75; }
+.abody p { margin:0 0 16px; }
+.hnscore { font-size:13px; color:#999; margin-top:4px; }
+.saved-empty { color:#aaa; font-style:italic; padding:20px 0; font-size:18px; }
+
+/* github */
+.repo { padding:12px 0; border-bottom:1px solid #ddd; }
+.rname { font-size:20px; font-weight:bold; }
+.rmeta { font-size:14px; color:#777; margin-top:3px; }
+.lock { font-size:12px; border:1px solid #ccc; padding:1px 6px; color:#999; margin-left:6px; }
+
+/* algo trader */
+.pos { padding:14px 0; border-bottom:1px solid #ddd; }
+.psym { font-size:22px; font-weight:bold; }
+.pmeta { font-size:15px; color:#777; margin-top:4px; }
+.pnl-pos { color:#000; font-weight:bold; }
+.pnl-neg { color:#555; }
+
+/* pharma pulse */
+.pulse-item { padding:12px 0; border-bottom:1px solid #eee; }
+.pulse-title { font-size:19px; line-height:1.3; }
+.pulse-date { font-size:13px; color:#aaa; margin-top:3px; }
+</style>
+</head><body>
+<div id="wrap">
+<div class="hdr">Dashboard <span class="r">Wed 17 Jun 19:56 UTC</span></div>
+<div id="tab-weather" class="tab on">
+<div class="hero">
+  <span class="temp">30&deg;</span>
+  <span class="wright">
+    <div class="cond">Mostly clear</div>
+    <div class="wsub">Mumbai &middot; feels 34&deg;</div>
+    <div class="hilo">High <b>33&deg;</b> &nbsp; Low <b>29&deg;</b></div>
+  </span>
+</div>
+<table class="wgrid"><tr>
+  <td><div class="wlabel">Wind</div><div class="wval">14 km/h</div></td>
+  <td><div class="wlabel">Humidity</div><div class="wval">68%</div></td>
+  <td><div class="wlabel">UV</div><div class="wval">0 Low</div></td>
+  <td><div class="wlabel">AQI</div><div class="wval">142 Sensitive</div></td>
+</tr></table>
+<div class="rainh">Rain probability &mdash; next 8 hours</div>
+<table class="ttab"><tr><td><div class="tval">26%</div><div class="thr">19:00</div></td><td><div class="tval">22%</div><div class="thr">20:00</div></td><td><div class="tval">16%</div><div class="thr">21:00</div></td><td><div class="tval">10%</div><div class="thr">22:00</div></td><td><div class="tval">6%</div><div class="thr">23:00</div></td><td><div class="tval">6%</div><div class="thr">00:00</div></td><td><div class="tval">9%</div><div class="thr">01:00</div></td><td><div class="tval">12%</div><div class="thr">02:00</div></td></tr></table>
+<div class="rainh" style="margin-top:20px">Temperature &mdash; next 8 hours</div>
+<table class="ttab"><tr><td><div class="tval">30&deg;</div><div class="thr">19:00</div></td><td><div class="tval">30&deg;</div><div class="thr">20:00</div></td><td><div class="tval">30&deg;</div><div class="thr">21:00</div></td><td><div class="tval">30&deg;</div><div class="thr">22:00</div></td><td><div class="tval">30&deg;</div><div class="thr">23:00</div></td><td><div class="tval">30&deg;</div><div class="thr">00:00</div></td><td><div class="tval">30&deg;</div><div class="thr">01:00</div></td><td><div class="tval">30&deg;</div><div class="thr">02:00</div></td></tr></table>
+</div>
+<div id="tab-bot" class="tab">
+<div class="sync">Mac synced: never &nbsp;&bull;&nbsp; USD &#8377;94.62 &nbsp;&bull;&nbsp; EUR &#8377;109.86</div>
+<h2>Outreach Bot</h2>
+
+<table class="sgrid">
+  <tr>
+    <td><div class="sl">Today Sent</div><div class="sv">--</div></td>
+    <td><div class="sl">In Pipeline</div><div class="sv">--</div></td>
+  </tr><tr>
+    <td><div class="sl">Open Rate</div><div class="sv">--%</div></td>
+    <td><div class="sl">Reply Rate</div><div class="sv">--%</div></td>
+  </tr><tr>
+    <td><div class="sl">Pending (NEW)</div><div class="sv">--</div></td>
+    <td><div class="sl">Email Opens</div><div class="sv">--</div></td>
+  </tr>
+</table>
+<table class="full">
+  <tr><td><div class="sl">Follow-ups Due Today</div><div class="sv">0</div></td></tr>
+  <tr><td><div class="sl">Bounced</div><div class="sv">--</div></td></tr>
+</table>
+
+</div>
+<div id="tab-day" class="tab"><div class="sync">Mac synced: never</div><h2>Calendar</h2><div class="empty">No events today</div><h2>Reminders</h2><div class="empty">No reminders</div></div>
+<div id="tab-claude" class="tab">
+<div class="ctimer" id="ctimer">--</div>
+<div class="csub">remaining in session</div>
+<table class="cbar"><tr id="cbar"></tr></table>
+<div class="cmeta">
+  <div id="creset">&nbsp;</div>
+  <div id="cstart">Started 07:56 PM</div>
+  <div style="margin-top:20px;font-size:16px;color:#aaa">Billing resets in <b>13d 4h</b></div>
+  <div style="font-size:13px;color:#bbb;margin-top:6px">Session from Mac sync: never</div>
+</div>
+</div>
+<div id="tab-news" class="tab"><div id="nl"><h2>News</h2><div class="nitem"><div class="ntitle" onclick="openArticle(0)">Israel launches fresh strikes on Lebanon despite Trump criticism</div><div class="nsrc">BBC News</div><div class="nact"><span onclick="openArticle(0)">Read</span><span onclick="saveArticle('Israel launches fresh strikes on Lebanon despite Trump criticism','BBC News','Speaking on Tuesday, Trump said Israel\'s PM Benjamin Netanyahu needed &quot;to be more responsible with respect to Lebanon&quot;.')">Read Later</span></div></div><div class="nitem"><div class="ntitle" onclick="openArticle(1)">Status quo at Jerusalem's holiest site under threat as Israeli nationalists flout rules</div><div class="nsrc">BBC News</div><div class="nact"><span onclick="openArticle(1)">Read</span><span onclick="saveArticle('Status quo at Jerusalem\'s holiest site under threat as Israeli nationalists flout rules','BBC News','Israeli nationalists are increasingly flouting a convention on how faiths share the al-Aqsa mosque compound.')">Read Later</span></div></div><div class="nitem"><div class="ntitle" onclick="openArticle(2)">'They came with machetes' - deadline looms for migrants to leave South Africa</div><div class="nsrc">BBC News</div><div class="nact"><span onclick="openArticle(2)">Read</span><span onclick="saveArticle('\'They came with machetes\' - deadline looms for migrants to leave South Africa','BBC News','Protesters have set 30 June as the date for all undocumented migrants to leave the country.')">Read Later</span></div></div><div class="nitem"><div class="ntitle" onclick="openArticle(3)">Search for six-year-old Ebola patient after armed men storm DR Congo hospital</div><div class="nsrc">BBC News</div><div class="nact"><span onclick="openArticle(3)">Read</span><span onclick="saveArticle('Search for six-year-old Ebola patient after armed men storm DR Congo hospital','BBC News','Health facilities have come under attack during the current outbreak as a result of misinformation and fear.')">Read Later</span></div></div><h2 style="margin-top:28px">Hacker News</h2><div class="nitem"><div class="ntitle">Want your images back? Sure... That'll be $5!</div><div class="hnscore">193 pts &middot; lutr</div></div><div class="nitem"><div class="ntitle">GLM-5.2 is the new leading open weights model on Artificial Analysis</div><div class="hnscore">410 pts &middot; himata4113</div></div><div class="nitem"><div class="ntitle">Sixty percent of US consumers say 'AI' in brand messaging is a turnoff</div><div class="hnscore">382 pts &middot; thm</div></div><div class="nitem"><div class="ntitle">RFC 10008: The new HTTP Query Method</div><div class="hnscore">130 pts &middot; schappim</div></div><div class="nitem"><div class="ntitle">MicroUI – A tiny, portable, immediate-mode UI library written in ANSI C</div><div class="hnscore">45 pts &middot; peter_d_sherman</div></div><h2 style="margin-top:28px">Industry Pulse</h2><div class="pulse-item"><div class="pulse-title">Centre looks to trigger 'Essentials' Act to regulate prices of bulk drugs - ETPharma.com</div><div class="pulse-date">Mon, 30 Mar 2026</div></div><div class="pulse-item"><div class="pulse-title">Medicine makers see sharp rise in prices due to war - The New Indian Express</div><div class="pulse-date">Sat, 04 Apr 2026</div></div><div class="pulse-item"><div class="pulse-title">Telangana’s pharma giants prepare for massive hit amid West Asia crisis - The Federal</div><div class="pulse-date">Wed, 11 Mar 2026</div></div><div class="pulse-item"><div class="pulse-title">Pharmaceutical exporters to benefit from Maersk’s first dedicated reefer rail service from Hyderabad to Mumbai - Maersk</div><div class="pulse-date">Mon, 11 May 2026</div></div><div class="pulse-item"><div class="pulse-title">Freight Surges and Maritime Disruptions Put Indian Pharma Exports at Risk - Pharmaceutical Commerce</div><div class="pulse-date">Fri, 06 Mar 2026</div></div></div><div class="av" id="av-0"><span class="backbtn" onclick="backToNews()">&lsaquo; News</span><div class="asrc">BBC News</div><div class="atitle">Israel launches fresh strikes on Lebanon despite Trump criticism</div><div class="abody"><p>Speaking on Tuesday, Trump said Israel's PM Benjamin Netanyahu needed &quot;to be more responsible with respect to Lebanon&quot;.</p></div></div><div class="av" id="av-1"><span class="backbtn" onclick="backToNews()">&lsaquo; News</span><div class="asrc">BBC News</div><div class="atitle">Status quo at Jerusalem's holiest site under threat as Israeli nationalists flout rules</div><div class="abody"><p>Israeli nationalists are increasingly flouting a convention on how faiths share the al-Aqsa mosque compound.</p></div></div><div class="av" id="av-2"><span class="backbtn" onclick="backToNews()">&lsaquo; News</span><div class="asrc">BBC News</div><div class="atitle">'They came with machetes' - deadline looms for migrants to leave South Africa</div><div class="abody"><p>Protesters have set 30 June as the date for all undocumented migrants to leave the country.</p></div></div><div class="av" id="av-3"><span class="backbtn" onclick="backToNews()">&lsaquo; News</span><div class="asrc">BBC News</div><div class="atitle">Search for six-year-old Ebola patient after armed men storm DR Congo hospital</div><div class="abody"><p>Health facilities have come under attack during the current outbreak as a result of misinformation and fear.</p></div></div></div>
+<div id="tab-saved" class="tab">
+<h2>Saved Articles</h2>
+<div id="saved-list"><div class="saved-empty">Loading&hellip;</div></div>
+</div>
+<div id="tab-github" class="tab"><div class="empty">Add GITHUB_TOKEN secret to GitHub Actions.</div></div>
+<div id="tab-trader" class="tab"><div class="empty">No algo_data.json found. Run export_algo.py after main.py.</div></div>
+
+</div>
+<div id="curtab">Weather</div>
+<div id="mbtn" onclick="toggleMenu()">&#9776;</div>
+<div id="menu"><div class="mitem" data-tab="weather" onclick="goTab('weather')">Weather</div><div class="mitem" data-tab="bot" onclick="goTab('bot')">Outreach Bot</div><div class="mitem" data-tab="day" onclick="goTab('day')">Day</div><div class="mitem" data-tab="claude" onclick="goTab('claude')">Claude</div><div class="mitem" data-tab="news" onclick="goTab('news')">News</div><div class="mitem" data-tab="saved" onclick="goTab('saved')">Saved</div><div class="mitem" data-tab="github" onclick="goTab('github')">GitHub</div><div class="mitem" data-tab="trader" onclick="goTab('trader')">Trader</div></div>
+<script>
+var _curtab='weather';
+var _tabnames={weather:'Weather',bot:'Outreach Bot',day:'Day',
+               claude:'Claude',news:'News',saved:'Saved',github:'GitHub',trader:'Trader'};
+
+function show(id){
+  var t=document.getElementsByClassName('tab');
+  for(var i=0;i<t.length;i++) t[i].className='tab';
+  document.getElementById('tab-'+id).className='tab on';
+  _curtab=id;
+  document.getElementById('curtab').innerHTML=_tabnames[id]||id;
+  if(id==='saved') renderSaved();
+  window.scrollTo(0,0);
+}
+function toggleMenu(){
+  var m=document.getElementById('menu');
+  if(m.style.display==='block'){
+    m.style.display='none';
+  } else {
+    var items=m.getElementsByClassName('mitem');
+    for(var i=0;i<items.length;i++){
+      items[i].className='mitem'+(items[i].getAttribute('data-tab')===_curtab?' mon':'');
+    }
+    m.style.display='block';
+  }
+}
+function goTab(id){ show(id); document.getElementById('menu').style.display='none'; }
+
+function openArticle(n){
+  document.getElementById('nl').style.display='none';
+  var av=document.getElementsByClassName('av');
+  for(var i=0;i<av.length;i++) av[i].style.display='none';
+  document.getElementById('av-'+n).style.display='block';
+  window.scrollTo(0,0);
+}
+function backToNews(){
+  var av=document.getElementsByClassName('av');
+  for(var i=0;i<av.length;i++) av[i].style.display='none';
+  document.getElementById('nl').style.display='block';
+  window.scrollTo(0,0);
+}
+
+/* Save Later */
+function saveArticle(title, source, summary){
+  var key='saved_'+Date.now();
+  try{
+    localStorage.setItem(key, JSON.stringify({title:title, source:source, body:summary,
+                                              saved_at:new Date().toISOString()}));
+    var btn=event.target; btn.innerHTML='Saved ✓'; btn.style.background='#000'; btn.style.color='#fff';
+  } catch(e){ alert('Could not save: '+e); }
+}
+function deleteSaved(key){
+  localStorage.removeItem(key);
+  renderSaved();
+}
+function renderSaved(){
+  var el=document.getElementById('saved-list');
+  if(!el) return;
+  var items=[];
+  for(var i=0;i<localStorage.length;i++){
+    var k=localStorage.key(i);
+    if(k && k.indexOf('saved_')===0){
+      try{ items.push({key:k, data:JSON.parse(localStorage.getItem(k))}); } catch(e){}
+    }
+  }
+  items.sort(function(a,b){ return b.key>a.key?1:-1; });
+  if(!items.length){
+    el.innerHTML='<div class="saved-empty">No saved articles. Tap Read Later on any news item.</div>';
+    return;
+  }
+  var html='';
+  for(var j=0;j<items.length;j++){
+    var it=items[j]; var d=it.data;
+    html+='<div class="nitem">';
+    html+='<div class="ntitle">'+esc(d.title||'')+'</div>';
+    html+='<div class="nsrc">'+esc(d.source||'')+'</div>';
+    if(d.body) html+='<div class="abody" style="margin-top:10px;font-size:18px">'+d.body.substring(0,400)+'&hellip;</div>';
+    html+='<div class="nact"><span onclick="deleteSaved(''+it.key+'')">Remove</span></div>';
+    html+='</div>';
+  }
+  el.innerHTML=html;
+}
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* Claude session countdown */
+var SESSION_TS=1781706408;
+var SESSION_DUR=18000;
+function updateClaude(){
+  var now=Math.floor(Date.now()/1000);
+  var elapsed=now-SESSION_TS;
+  var rem=SESSION_DUR-elapsed;
+  if(rem<0) rem=0;
+  var h=Math.floor(rem/3600);
+  var m=Math.floor((rem%3600)/60);
+  var el=document.getElementById('ctimer');
+  if(el) el.innerHTML=h+'h '+(m<10?'0':'')+m+'m';
+  var pct=Math.min(100,Math.round(elapsed/SESSION_DUR*100));
+  var filled=Math.round(pct/5);
+  var cells='';
+  for(var i=0;i<20;i++)
+    cells+='<td style="background:'+(i<filled?'#000':'#e0e0e0')+';height:20px"></td>';
+  var bar=document.getElementById('cbar');
+  if(bar) bar.innerHTML=cells;
+  var rt=new Date((SESSION_TS+SESSION_DUR)*1000);
+  var rh=rt.getHours(); var rm=rt.getMinutes();
+  var ap=rh>=12?'PM':'AM'; rh=rh%12||12;
+  var rel=document.getElementById('creset');
+  if(rel) rel.innerHTML='Resets at '+rh+':'+(rm<10?'0':'')+rm+' '+ap;
+}
+updateClaude();
+setInterval(updateClaude,30000);
+</script>
+</body></html>

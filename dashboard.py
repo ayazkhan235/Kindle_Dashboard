@@ -9,28 +9,67 @@ import config
 
 BASE_DIR = Path(__file__).parent
 
+KINDLE_SSH = ["ssh", "-p", "2222", "-o", "ConnectTimeout=5",
+              "-o", "StrictHostKeyChecking=no", "root@172.20.10.2"]
+
 CSS = """
-body { font-family: Georgia, serif; font-size: 22px; background: white; color: black; margin: 0; padding: 20px; }
-h1 { font-size: 16px; font-weight: bold; border-bottom: 2px solid black; padding-bottom: 6px; margin: 20px 0 12px 0; text-transform: uppercase; letter-spacing: 2px; }
-.meta { font-size: 16px; color: #666; margin-bottom: 4px; }
-.back { font-size: 18px; color: black; text-decoration: none; border: 1px solid black; padding: 6px 14px; display: inline-block; margin-bottom: 16px; }
-.temp { font-size: 64px; font-weight: bold; }
-.cond { font-size: 26px; }
-.wmeta { font-size: 20px; color: #444; margin-top: 8px; }
-.rain-row { margin: 10px 0; font-size: 18px; color: #333; }
-.news-item { border-bottom: 1px solid #ccc; padding: 12px 0; }
-.news-title { font-size: 22px; font-weight: bold; line-height: 1.35; text-decoration: none; color: black; display: block; }
-.news-src { font-size: 16px; color: #777; margin-top: 4px; }
-.event { padding: 12px 0; border-bottom: 1px solid #ddd; }
-.event-title { font-size: 22px; font-weight: bold; }
-.event-time { font-size: 18px; color: #555; margin-top: 4px; }
-.task { padding: 10px 0; border-bottom: 1px solid #ddd; font-size: 22px; }
-.stat { font-size: 22px; margin-bottom: 10px; }
-.big { font-size: 48px; font-weight: bold; line-height: 1; }
-.label { font-size: 16px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
-.log { font-size: 17px; color: #555; margin-top: 6px; word-break: break-word; }
-.article-body { font-size: 22px; line-height: 1.6; }
-.article-body p { margin: 0 0 14px; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; padding: 0; }
+body { font-family: Georgia, serif; font-size: 21px; background: #fff; color: #000; }
+.screen { height: 100vh; display: flex; flex-direction: column; }
+.tab-content { flex: 1; overflow-y: auto; padding: 22px 24px 28px; display: none; }
+.tab-content.active { display: block; }
+
+nav { display: flex; background: #000; height: 70px; flex-shrink: 0; }
+nav button { flex: 1; background: none; border: none; border-right: 1px solid #444; color: #999; font-size: 13px; font-family: Georgia, serif; cursor: pointer; padding: 0; letter-spacing: 0.5px; }
+nav button:last-child { border-right: none; }
+nav button.active { background: #fff; color: #000; font-weight: bold; }
+
+h2 { font-size: 13px; font-weight: bold; border-bottom: 3px double #000; padding-bottom: 6px; margin: 30px 0 14px; text-transform: uppercase; letter-spacing: 3px; }
+h2:first-child { margin-top: 0; }
+
+.meta { font-size: 13px; color: #999; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; border-bottom: 1px solid #000; padding-bottom: 10px; }
+
+.temp { font-size: 96px; font-weight: bold; line-height: 0.95; letter-spacing: -3px; }
+.cond { font-size: 26px; font-style: italic; margin: 4px 0 18px; color: #222; }
+.wmeta { font-size: 18px; color: #333; margin: 8px 0; line-height: 1.4; }
+.rain-row { margin: 16px 0 0; font-size: 15px; color: #555; line-height: 1.9; }
+
+.news-item { border-bottom: 1px solid #ccc; padding: 18px 0; cursor: pointer; }
+.news-item:first-child { padding-top: 4px; }
+.news-title { font-size: 22px; font-weight: bold; line-height: 1.3; color: #000; }
+.news-src { font-size: 13px; color: #999; margin-top: 6px; text-transform: uppercase; letter-spacing: 1px; }
+.news-list.hidden { display: none; }
+.article-view { display: none; }
+.article-view.active { display: block; }
+.back-btn { font-size: 15px; color: #fff; background: #000; border: none; padding: 11px 22px; display: inline-block; margin-bottom: 20px; cursor: pointer; font-family: Georgia, serif; letter-spacing: 1px; }
+.article-src { font-size: 13px; color: #999; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+.article-title { font-size: 28px; font-weight: bold; line-height: 1.25; margin-bottom: 20px; }
+.article-body { font-size: 20px; line-height: 1.75; }
+.article-body p { margin: 0 0 18px; }
+
+.event { padding: 14px 0; border-bottom: 1px solid #ddd; }
+.event-title { font-size: 21px; font-weight: bold; }
+.event-time { font-size: 15px; color: #777; margin-top: 4px; }
+.task { padding: 13px 0; border-bottom: 1px solid #ddd; font-size: 20px; }
+
+.stat-row { margin-bottom: 22px; }
+.stat-label { font-size: 12px; color: #999; text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 4px; }
+.stat-val { font-size: 44px; font-weight: bold; line-height: 1; }
+.log-text { font-size: 15px; color: #555; margin-top: 6px; word-break: break-word; line-height: 1.5; }
+.rate-row { font-size: 22px; margin-bottom: 12px; }
+
+.book-item { border-bottom: 1px solid #ddd; padding: 18px 0; }
+.book-title { font-size: 21px; font-weight: bold; line-height: 1.3; }
+.book-meta { font-size: 14px; color: #777; margin-top: 8px; display: flex; align-items: center; gap: 12px; }
+.progress-wrap { flex: 1; height: 6px; background: #ddd; overflow: hidden; }
+.progress-fill { height: 100%; background: #000; }
+.format-badge { font-size: 11px; border: 1px solid #999; padding: 2px 7px; color: #777; flex-shrink: 0; letter-spacing: 1px; }
+.empty { color: #aaa; font-style: italic; padding: 20px 0; font-size: 18px; }
+.exit-btn { width: 100%; padding: 20px; font-size: 21px; font-family: Georgia, serif; background: #000; color: #fff; border: none; cursor: pointer; margin-bottom: 24px; letter-spacing: 1px; }
+
+#exit-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #fff; z-index: 100; align-items: center; justify-content: center; }
+#exit-overlay div { font-size: 26px; font-style: italic; text-align: center; line-height: 1.5; }
 """
 
 
@@ -168,6 +207,132 @@ def fetch_reminders():
         return []
 
 
+def fetch_outreach_db():
+    try:
+        import sqlite3
+        conn = sqlite3.connect(config.OUTREACH_DB)
+        c = conn.cursor()
+        today = datetime.now().strftime("%Y-%m-%d")
+
+        c.execute("SELECT COUNT(*) FROM leads WHERE date(first_sent_at)=?", (today,))
+        today_sent = c.fetchone()[0]
+
+        c.execute("SELECT COUNT(*) FROM leads WHERE status IN ('SENT','FOLLOW_UP_1','CONTACT_UPGRADED')")
+        in_pipeline = c.fetchone()[0]
+
+        c.execute("SELECT COUNT(*) FROM leads WHERE status NOT IN ('NEW','NOT_FOUND','WRONG_CONTACT')")
+        total_sent = c.fetchone()[0]
+
+        c.execute("SELECT COUNT(*) FROM leads WHERE reply_type IS NOT NULL AND reply_type != ''")
+        replied = c.fetchone()[0]
+
+        c.execute("SELECT COUNT(*) FROM leads WHERE status='NEW'")
+        pending = c.fetchone()[0]
+
+        c.execute("SELECT COUNT(*) FROM leads WHERE status='BOUNCED'")
+        bounced = c.fetchone()[0]
+
+        c.execute("SELECT COUNT(*) FROM opens")
+        opens = c.fetchone()[0]
+
+        c.execute("SELECT COUNT(*) FROM leads WHERE date(next_followup_at)=?", (today,))
+        followups_due = c.fetchone()[0]
+
+        open_rate = round(opens / max(total_sent, 1) * 100)
+        reply_rate = round(replied / max(total_sent, 1) * 100)
+
+        c.execute("""SELECT e.created_at, e.event_type, l.company
+                     FROM events e JOIN leads l ON e.email=l.email
+                     ORDER BY e.created_at DESC LIMIT 5""")
+        events = [{"date": (r[0] or "")[:10], "type": r[1], "company": r[2] or ""}
+                  for r in c.fetchall()]
+        conn.close()
+        return {"today_sent": today_sent, "in_pipeline": in_pipeline,
+                "total_sent": total_sent, "replied": replied, "pending": pending,
+                "bounced": bounced, "opens": opens, "followups_due": followups_due,
+                "open_rate": open_rate, "reply_rate": reply_rate, "events": events}
+    except Exception as e:
+        return {"today_sent": "--", "in_pipeline": "--", "total_sent": "--",
+                "replied": "--", "pending": "--", "bounced": "--", "opens": "--",
+                "followups_due": 0, "open_rate": "--", "reply_rate": "--", "events": []}
+
+
+def fetch_hn_top(n=5):
+    try:
+        ids = requests.get("https://hacker-news.firebaseio.com/v0/topstories.json",
+                           timeout=8).json()[:n]
+        stories = []
+        for sid in ids:
+            try:
+                s = requests.get(f"https://hacker-news.firebaseio.com/v0/item/{sid}.json",
+                                 timeout=5).json()
+                stories.append({"title": s.get("title", ""), "score": s.get("score", 0),
+                                 "by": s.get("by", "")})
+            except Exception:
+                pass
+        return stories
+    except Exception:
+        return []
+
+
+def fetch_github():
+    try:
+        token = config.GITHUB_TOKEN
+        if not token:
+            return {"repos": [], "pr_count": "--", "issue_count": "--", "username": ""}
+        headers = {"Authorization": f"token {token}",
+                   "Accept": "application/vnd.github.v3+json"}
+        user = requests.get("https://api.github.com/user", headers=headers, timeout=8).json()
+        username = user.get("login", config.GITHUB_USERNAME)
+        repos_raw = requests.get(
+            "https://api.github.com/user/repos?sort=pushed&per_page=6&type=owner",
+            headers=headers, timeout=8).json()
+        repos = [{"name": r["name"],
+                  "pushed": r["pushed_at"][:10] if r.get("pushed_at") else "",
+                  "private": r.get("private", False)}
+                 for r in repos_raw if isinstance(r, dict)][:6]
+        prs = requests.get(
+            f"https://api.github.com/search/issues?q=is:pr+is:open+author:{username}",
+            headers=headers, timeout=8).json()
+        pr_count = prs.get("total_count", 0)
+        issues_raw = requests.get(
+            "https://api.github.com/issues?state=open&per_page=10",
+            headers=headers, timeout=8).json()
+        issue_count = len(issues_raw) if isinstance(issues_raw, list) else 0
+        return {"repos": repos, "pr_count": pr_count,
+                "issue_count": issue_count, "username": username}
+    except Exception:
+        return {"repos": [], "pr_count": "--", "issue_count": "--", "username": ""}
+
+
+def fetch_notes(n=3):
+    try:
+        script = '''tell application "Notes"
+    set out to {}
+    repeat with i from 1 to ''' + str(n) + '''
+        try
+            set nt to note i of default account
+            set bd to plaintext of nt
+            if length of bd > 200 then set bd to text 1 thru 200 of bd
+            set out to out & {name of nt & "|||" & bd}
+        end try
+    end repeat
+    return out
+end tell'''
+        result = subprocess.run(["osascript", "-e", script],
+                                capture_output=True, text=True, timeout=10)
+        if result.returncode != 0:
+            return []
+        notes = []
+        for item in result.stdout.strip().split(", "):
+            if "|||" in item:
+                title, preview = item.split("|||", 1)
+                notes.append({"title": title.strip(), "preview": preview.strip()})
+        return notes
+    except Exception:
+        return []
+
+
 def fetch_outreach_status():
     try:
         log_path = config.OUTREACH_LOG
@@ -211,11 +376,61 @@ def fetch_news():
 
 def fetch_article_body(url):
     try:
-        r = requests.get(url, timeout=8, headers={"User-Agent": "Mozilla/5.0"})
-        doc = Document(r.text)
+        from html import unescape
+        r = requests.get(url, timeout=10, headers={"User-Agent": "Mozilla/5.0"})
+        html = r.text
+        # BBC: paragraphs carry a Paragraph-styles class
+        paras = re.findall(r'<p class="Paragraph-styles[^"]*">(.*?)</p>', html, re.S)
+        clean = [unescape(re.sub(r'<[^>]+>', '', p)).strip() for p in paras]
+        clean = [c for c in clean if c]
+        if len(clean) >= 3:
+            return "".join(f"<p>{c}</p>" for c in clean)
+        doc = Document(html)
         return doc.summary()
-    except:
+    except Exception:
         return None
+
+
+def fetch_books():
+    try:
+        cmd = (
+            'cd /mnt/us/koreader/books 2>/dev/null || exit 0; '
+            'for f in *.epub *.mobi *.azw *.azw3 *.pdf; do '
+            '[ -f "$f" ] || continue; '
+            'ext="${f##*.}"; base="${f%.*}"; '
+            'sdr="$base.sdr/metadata.$ext.lua"; progress=""; '
+            '[ -f "$sdr" ] && progress=$(grep percent_finished "$sdr" | grep -oE "[0-9.]+" | tail -1); '
+            'echo "$f|$progress"; done'
+        )
+        result = subprocess.run(KINDLE_SSH + [cmd], capture_output=True, text=True, timeout=15)
+        books = []
+        for line in result.stdout.strip().split('\n'):
+            if not line.strip() or '|' not in line:
+                continue
+            filename, progress_str = line.strip().split('|', 1)
+            ext = filename.rsplit('.', 1)[-1].upper() if '.' in filename else ''
+            name = filename.rsplit('.', 1)[0]
+            name = re.sub(r'\s*-?\s*libgen\.li$', '', name, flags=re.I)
+            name = re.sub(r'\s*\(\d{4},[^)]*\)', '', name)        # drop (year, publisher)
+            name = re.sub(r'\{\d{6,}\}', '', name)                # drop libgen id {123456}
+            name = re.sub(r'^\[[^\]]*\]\s*', '', name)            # drop leading [series]
+            m = re.match(r'^[^,]+,?\s+[A-Z]\w*\s*-\s*(.+)', name)  # "Author - Title"
+            if ' - ' in name:
+                name = name.split(' - ', 1)[1]
+            name = re.sub(r'\{[^}]*\}', ' ', name)                # drop {author} braces
+            name = re.sub(r'_', ' ', name)
+            name = re.sub(r'\s+', ' ', name).strip(' .')
+            progress = None
+            if progress_str.strip():
+                try:
+                    progress = round(float(progress_str.strip()) * 100)
+                except Exception:
+                    pass
+            books.append({'title': name, 'filename': filename, 'format': ext, 'progress': progress})
+        books.sort(key=lambda b: (b['progress'] is None, -(b['progress'] or 0)))
+        return books
+    except Exception:
+        return []
 
 
 def claude_reset_countdown():
@@ -231,160 +446,124 @@ def claude_reset_countdown():
     return f"{delta.days}d {delta.seconds // 3600}h"
 
 
-BASE = "file:///mnt/us/documents"
-
-def page(title, body):
-    return f"""<!DOCTYPE html>
-<html><head><meta charset="utf-8"><style>{CSS}</style></head>
-<body>{body}</body></html>"""
-
-def make_home_body(weather, aqi, currency, articles, events, reminders, outreach, claude_reset, updated):
-    # Rain forecast rows
-    rain_rows = ""
-    for t, pct in weather["rain_hours"]:
-        hour = t.split("T")[1][:5] if "T" in t else t
-        rain_rows += f'<span class="rain-hour"><div class="rain-pct">{pct}%</div><div>{hour}</div></span>'
-
-    news_links = ""
-    for i, a in enumerate(articles, 1):
-        news_links += f'<a class="news-link" href="article{i}.xhtml">{a["title"]}<div class="news-src">{a["source"]}</div></a>\n'
-
-    cal_rows = ""
-    for e in events:
-        cal_rows += f'<div class="event"><div>{e["title"]}</div><div class="event-time">{e["time"]}</div></div>\n'
-    if not cal_rows:
-        cal_rows = '<div class="event">No events today</div>'
-
-    task_rows = ""
-    for t in reminders:
-        task_rows += f'<div class="task">&#9633; {t}</div>\n'
-    if not task_rows:
-        task_rows = '<div class="task">No reminders</div>'
-
-    return f"""<div class="meta">{updated}</div>
-
-<h1>Weather &#8212; Mumbai</h1>
-<div class="weather-row">
-  <span class="temp">{weather['temp']}&#176;</span>
-  <span class="cond">{weather['condition']}</span>
-</div>
-<div class="weather-meta">
-  Feels {weather['feels']}&#176; &nbsp;&#183;&nbsp; Wind {weather['wind']} km/h &nbsp;&#183;&nbsp; Humidity {weather['humidity']}%
-</div>
-<div class="weather-meta">
-  UV {weather['uv']} {weather['uv_label']} &nbsp;&#183;&nbsp; AQI {aqi['aqi']} {aqi['label']}
-</div>
-<div class="weather-meta">
-  Sunrise {weather['sunrise']} &nbsp;&#183;&nbsp; Sunset {weather['sunset']}
-</div>
-<div class="rain-bar-wrap">{rain_rows}</div>
-
-<div class="heavy-hr"/>
-
-<h1>News</h1>
-{news_links}
-
-<div class="heavy-hr"/>
-
-<h1>Calendar</h1>
-{cal_rows}
-
-<div class="heavy-hr"/>
-
-<h1>Reminders</h1>
-{task_rows}
-
-<div class="heavy-hr"/>
-
-<h1>Outreach Bot</h1>
-<div class="stat-row"><span class="label">Emails today</span><br/><span class="val">{outreach['emails_today']}</span></div>
-<div class="stat-row"><span class="label">Last entry</span><br/>{outreach['last_action']}</div>
-
-<div class="heavy-hr"/>
-
-<h1>Rates &amp; Claude</h1>
-<div class="stat-row">USD/INR <span class="val">&#8377;{currency['usd_inr']}</span> &nbsp;&#183;&nbsp; EUR/INR <span class="val">&#8377;{currency['eur_inr']}</span></div>
-<div class="stat-row">Claude resets in <span class="val">{claude_reset}</span></div>"""
-
-
-def make_article_html(article, body_html, index, total):
-    raw = body_html.strip() if body_html else ""
-    clean_body = raw if len(raw) > 50 else f"<p>{article['summary']}</p>"
-    body = f"""<a class="back" href="{BASE}/dashboard.html">&#8592; Dashboard</a>
-<div class="label">{article['source']} &nbsp;&#183;&nbsp; Article {index} of {total}</div>
-<h1>{article['title']}</h1>
-<hr/>
-<div class="article-body">{clean_body}</div>"""
-    return page(article['title'], body)
-
-
-def build_html(weather, aqi, currency, articles, events, reminders, outreach, claude_reset, article_bodies):
+def build_html(weather, aqi, currency, articles, events, reminders, outreach, claude_reset, article_bodies, books):
     updated = datetime.now().strftime("%d %b %Y, %I:%M %p")
 
-    # Rain forecast line
+    # --- HOME TAB ---
     rain_parts = []
     for t, pct in weather["rain_hours"]:
         hour = t.split("T")[1][:5] if "T" in t else t
         rain_parts.append(f"{hour}&nbsp;{pct}%")
     rain_line = " &nbsp;|&nbsp; ".join(rain_parts)
 
-    # News links
-    news_html = ""
-    for i, a in enumerate(articles, 1):
-        news_html += f"""<div class="news-item">
-<a class="news-title" href="{BASE}/news/article-{i}.html">{a['title']}</a>
-<div class="news-src">{a['source']}</div>
-</div>\n"""
+    home_html = f"""<div class="meta">Updated {updated}</div>
+<div class="temp">{weather['temp']}&#176;</div>
+<div class="cond">{weather['condition']}</div>
+<div class="wmeta">Feels {weather['feels']}&#176; &nbsp;&#183;&nbsp; Wind {weather['wind']} km/h &nbsp;&#183;&nbsp; Humidity {weather['humidity']}%</div>
+<div class="wmeta">UV {weather['uv']} {weather['uv_label']} &nbsp;&#183;&nbsp; AQI {aqi['aqi']} {aqi['label']}</div>
+<div class="wmeta">&#9788; {weather['sunrise']} &nbsp;&#183;&nbsp; &#9790; {weather['sunset']}</div>
+<div class="rain-row">Rain: {rain_line}</div>
+<h2>Rates</h2>
+<div class="rate-row">USD/INR &nbsp;<strong>&#8377;{currency['usd_inr']}</strong> &nbsp;&nbsp; EUR/INR &nbsp;<strong>&#8377;{currency['eur_inr']}</strong></div>
+<div class="wmeta">Claude resets in <strong>{claude_reset}</strong></div>"""
 
-    # Calendar
+    # --- NEWS TAB ---
+    news_list_html = ""
+    for i, a in enumerate(articles):
+        news_list_html += f'<div class="news-item" onclick="showArticle({i})"><div class="news-title">{a["title"]}</div><div class="news-src">{a["source"]}</div></div>\n'
+
+    articles_html = ""
+    for i, (a, body) in enumerate(zip(articles, article_bodies)):
+        raw = (body or "").strip()
+        content = raw if len(raw) > 50 else f"<p>{a['summary']}</p>"
+        articles_html += f'<div class="article-view" id="article-{i}"><button class="back-btn" onclick="backToNews()">&#8592; News</button><div class="article-src">{a["source"]}</div><div class="article-title">{a["title"]}</div><div class="article-body">{content}</div></div>\n'
+
+    news_html = f'<div class="news-list">{news_list_html}</div>{articles_html}'
+
+    # --- CALENDAR TAB ---
     cal_html = ""
     for e in events:
         cal_html += f'<div class="event"><div class="event-title">{e["title"]}</div><div class="event-time">{e["time"]}</div></div>\n'
     if not cal_html:
-        cal_html = '<div class="event">No events today</div>'
+        cal_html = '<div class="empty">No events today</div>'
 
-    # Tasks
     task_html = ""
     for t in reminders:
         task_html += f'<div class="task">&#9633; {t}</div>\n'
     if not task_html:
-        task_html = '<div class="task">No reminders</div>'
+        task_html = '<div class="empty">No reminders</div>'
 
-    home_body = f"""<div class="meta">{updated}</div>
+    cal_tab_html = f'<h2>Calendar</h2>{cal_html}<h2>Reminders</h2>{task_html}'
 
-<h1>Weather &#8212; Mumbai</h1>
-<div><span class="temp">{weather['temp']}&#176;</span></div>
-<div class="wmeta">{weather['condition']} &nbsp;&#183;&nbsp; Feels {weather['feels']}&#176; &nbsp;&#183;&nbsp; Wind {weather['wind']} km/h</div>
-<div class="wmeta">Humidity {weather['humidity']}% &nbsp;&#183;&nbsp; UV {weather['uv']} {weather['uv_label']} &nbsp;&#183;&nbsp; AQI {aqi['aqi']} {aqi['label']}</div>
-<div class="wmeta">Sunrise {weather['sunrise']} &nbsp;&#183;&nbsp; Sunset {weather['sunset']}</div>
-<div class="rain-row">Rain next 8h: {rain_line}</div>
+    # --- LIBRARY TAB ---
+    lib_html = '<button class="exit-btn" onclick="exitToKOReader()">Open KOReader</button>\n'
+    for b in books:
+        pct = b['progress']
+        if pct is not None:
+            bar = f'<div class="progress-wrap"><div class="progress-fill" style="width:{pct}%"></div></div><span>{pct}%</span>'
+        else:
+            bar = '<span style="color:#bbb">not started</span>'
+        lib_html += f'<div class="book-item"><div class="book-title">{b["title"]}</div><div class="book-meta"><span class="format-badge">{b["format"]}</span>{bar}</div></div>\n'
+    if len(books) == 0:
+        lib_html += '<div class="empty">No EPUB/MOBI files found</div>'
 
-<h1>News</h1>
-{news_html}
-<h1>Calendar</h1>
-{cal_html}
-<h1>Reminders</h1>
-{task_html}
-<h1>Outreach Bot</h1>
-<div class="stat"><span class="label">Emails today</span><br/><span class="big">{outreach['emails_today']}</span></div>
-<div class="label">Last entry</div>
-<div class="log">{outreach['last_action']}</div>
+    # --- BOT TAB ---
+    bot_html = f"""<div class="stat-row"><span class="stat-label">Emails today</span><span class="stat-val">{outreach['emails_today']}</span></div>
+<div class="stat-row"><span class="stat-label">Last entry</span><div class="log-text">{outreach['last_action']}</div></div>"""
 
-<h1>Rates &amp; Claude</h1>
-<div class="stat">USD/INR <strong>&#8377;{currency['usd_inr']}</strong> &nbsp;&nbsp; EUR/INR <strong>&#8377;{currency['eur_inr']}</strong></div>
-<div class="stat">Claude resets in <strong>{claude_reset}</strong></div>"""
+    js = """
+function showTab(id) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  document.getElementById('nav-' + id).classList.add('active');
+}
+function showArticle(idx) {
+  document.querySelector('.news-list').classList.add('hidden');
+  document.querySelectorAll('.article-view').forEach(a => a.classList.remove('active'));
+  document.getElementById('article-' + idx).classList.add('active');
+}
+function backToNews() {
+  document.querySelectorAll('.article-view').forEach(a => a.classList.remove('active'));
+  document.querySelector('.news-list').classList.remove('hidden');
+}
+function exitToKOReader() {
+  var o = document.getElementById('exit-overlay');
+  o.style.display = 'flex';
+  var x = new XMLHttpRequest();
+  x.open('GET', 'http://127.0.0.1:8765/exit', true);
+  x.onerror = function() { o.querySelector('div').innerHTML = 'Bridge unreachable.<br>Use KUAL to switch.'; };
+  x.send();
+}
+"""
 
-    pages = {"dashboard.html": page("Dashboard", home_body)}
+    html = f"""<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>{CSS}</style>
+</head>
+<body>
+<div id="exit-overlay"><div>Switching to KOReader&#8230;</div></div>
+<div class="screen">
+  <div id="tab-home" class="tab-content active">{home_html}</div>
+  <div id="tab-news" class="tab-content">{news_html}</div>
+  <div id="tab-cal" class="tab-content">{cal_tab_html}</div>
+  <div id="tab-lib" class="tab-content"><h2>Library</h2>{lib_html}</div>
+  <div id="tab-bot" class="tab-content"><h2>Outreach Bot</h2>{bot_html}</div>
+  <nav>
+    <button id="nav-home" class="active" onclick="showTab('home')">Home</button>
+    <button id="nav-news" onclick="showTab('news')">News</button>
+    <button id="nav-cal" onclick="showTab('cal')">Calendar</button>
+    <button id="nav-lib" onclick="showTab('lib')">Library</button>
+    <button id="nav-bot" onclick="showTab('bot')">Bot</button>
+  </nav>
+</div>
+<script>{js}</script>
+</body></html>"""
 
-    news_dir = BASE_DIR / "news"
-    news_dir.mkdir(exist_ok=True)
-    for i, (article, body) in enumerate(zip(articles, article_bodies), 1):
-        pages[f"news/article-{i}.html"] = make_article_html(article, body, i, len(articles))
-
-    for filename, content in pages.items():
-        (BASE_DIR / filename).write_text(content, encoding="utf-8")
-
-    return list(pages.keys())
+    (BASE_DIR / "dashboard.html").write_text(html, encoding="utf-8")
+    return "dashboard.html"
 
 
 def main():
@@ -420,8 +599,11 @@ def main():
 
     claude_reset = claude_reset_countdown()
 
-    files = build_html(weather, aqi, currency, articles, events, reminders, outreach, claude_reset, article_bodies)
-    print(f"\nGenerated {len(files)} files in {BASE_DIR}")
+    books = fetch_books()
+    print(f"  Library: {len(books)} books")
+
+    build_html(weather, aqi, currency, articles, events, reminders, outreach, claude_reset, article_bodies, books)
+    print(f"\nGenerated dashboard.html in {BASE_DIR}")
 
 
 if __name__ == "__main__":
