@@ -26,6 +26,12 @@ PHARMA_FEEDS = [
     "https://news.google.com/rss/search?q=pharmaceutical+freight+shipping+india&hl=en-IN&gl=IN&ceid=IN:en",
     "https://news.google.com/rss/search?q=API+active+pharmaceutical+ingredient+price+2026&hl=en&gl=US&ceid=US:en",
 ]
+AI_FEEDS = [
+    "https://news.google.com/rss/search?q=Claude+AI+Anthropic&hl=en&gl=US&ceid=US:en",
+    "https://news.google.com/rss/search?q=large+language+model+LLM+2026&hl=en&gl=US&ceid=US:en",
+    "https://news.google.com/rss/search?q=OpenAI+GPT+Gemini+AI&hl=en&gl=US&ceid=US:en",
+    "https://news.google.com/rss/search?q=artificial+intelligence+news+2026&hl=en&gl=US&ceid=US:en",
+]
 OUT_DIR = Path("docs")
 OUT_DIR.mkdir(exist_ok=True)
 
@@ -177,6 +183,32 @@ def fetch_pharma_news(max_items=5):
     return items[:max_items]
 
 
+def fetch_ai_news(max_items=10):
+    items = []
+    seen = set()
+    for url in AI_FEEDS:
+        try:
+            feed = feedparser.parse(url)
+            for e in feed.entries[:4]:
+                title = e.get("title", "").strip()
+                if not title or title in seen:
+                    continue
+                seen.add(title)
+                items.append({
+                    "title": title,
+                    "source": e.get("source", {}).get("title", "Google News") if hasattr(e.get("source", {}), "get") else "Google News",
+                    "date": e.get("published", "")[:16],
+                    "url": e.get("link", ""),
+                })
+                if len(items) >= max_items:
+                    break
+        except Exception:
+            pass
+        if len(items) >= max_items:
+            break
+    return items[:max_items]
+
+
 def fetch_hn_top(n=5):
     try:
         ids = requests.get(
@@ -266,15 +298,13 @@ body { font-family:Georgia,serif; background:#fff; color:#000; font-size:20px;
 .tab { display:none; }
 .tab.on { display:block; }
 
-/* bottom bar */
-#curtab { position:fixed; left:0; right:80px; bottom:0; height:70px; background:#000;
-          color:#888; font-size:13px; letter-spacing:2px; text-transform:uppercase;
-          line-height:70px; padding-left:22px; }
-#mbtn { position:fixed; right:0; bottom:0; width:80px; height:70px; background:#111;
-        color:#fff; font-size:32px; line-height:70px; text-align:center; cursor:pointer;
-        border-left:1px solid #333; }
-#menu { display:none; position:fixed; left:0; right:0; bottom:70px;
-        background:#fff; border-top:3px solid #000; z-index:200; }
+/* header nav */
+.hdr { position:relative; }
+#mbtn { float:right; font-size:26px; cursor:pointer; padding:0 0 0 20px;
+        color:#000; letter-spacing:0; text-transform:none; }
+#menu { display:none; position:absolute; top:100%; right:0; left:0;
+        background:#fff; border:2px solid #000; z-index:200;
+        margin-top:10px; }
 .mitem { display:block; padding:20px 26px; font-size:22px;
          border-bottom:1px solid #ddd; cursor:pointer; }
 .mitem.mon { font-weight:bold; background:#f8f8f8; }
@@ -367,6 +397,13 @@ h2:first-child { margin-top:0; }
 .pulse-item { padding:12px 0; border-bottom:1px solid #eee; }
 .pulse-title { font-size:19px; line-height:1.3; }
 .pulse-date { font-size:13px; color:#aaa; margin-top:3px; }
+
+/* pagination */
+.pgbar { display:flex; justify-content:space-between; align-items:center;
+         padding:12px 0; margin-top:8px; }
+.pgbtn { font-size:20px; font-weight:bold; padding:8px 16px;
+         background:#f0f0f0; border-radius:6px; cursor:pointer; }
+.pginfo { font-size:16px; color:#888; }
 """
 
 JS_TEMPLATE = """
@@ -453,6 +490,36 @@ function renderSaved(){
 }
 function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
+/* Pagination for news lists */
+var _pages={};
+function initPager(id, pageSize){
+  var items=document.querySelectorAll('#'+id+' .paged-item');
+  if(!items.length) return;
+  _pages[id]={cur:0, size:pageSize, total:items.length};
+  renderPage(id);
+}
+function renderPage(id){
+  var p=_pages[id]; if(!p) return;
+  var items=document.querySelectorAll('#'+id+' .paged-item');
+  var start=p.cur*p.size; var end=start+p.size;
+  for(var i=0;i<items.length;i++)
+    items[i].style.display=(i>=start&&i<end)?'block':'none';
+  var ctrl=document.getElementById('pg-'+id);
+  if(!ctrl) return;
+  var pages=Math.ceil(p.total/p.size);
+  ctrl.innerHTML=(pages>1)?
+    (p.cur>0?'<span class="pgbtn" onclick="changePage(\''+id+'\',-1)">&lsaquo; Prev</span>':'')+
+    '<span class="pginfo">'+(p.cur+1)+' / '+pages+'</span>'+
+    (p.cur<pages-1?'<span class="pgbtn" onclick="changePage(\''+id+'\',1)">Next &rsaquo;</span>':'')
+    :'';
+}
+function changePage(id, dir){
+  var p=_pages[id]; if(!p) return;
+  var pages=Math.ceil(p.total/p.size);
+  p.cur=Math.max(0,Math.min(pages-1,p.cur+dir));
+  renderPage(id); window.scrollTo(0,0);
+}
+
 /* Claude session countdown */
 var SESSION_TS=%d;
 var SESSION_DUR=18000;
@@ -515,7 +582,7 @@ def weather_tab(w, aqi):
        aqi["aqi"], aqi["label"], rain_cells, temp_cells)
 
 
-def bot_tab(private, forex):
+def bot_tab(private, forex, pharma_items):
     o = private.get("outreach", {})
     synced = synced_ago(private.get("synced_at"))
     if o.get("error"):
@@ -553,21 +620,25 @@ def bot_tab(private, forex):
           o.get("pending","--"), o.get("opens","--"),
           fu_cls, fu, o.get("bounced","--"), events_html)
 
+    pharma_items_html = "".join(
+        '<div class="pulse-item paged-item">'
+        '<div class="pulse-title">%s</div>'
+        '<div class="pulse-date">%s</div>'
+        '</div>' % (esc(it["title"]), esc(it["date"]))
+        for it in pharma_items)
+    industry_section = (
+        '<h2 style="margin-top:28px">Industry Pulse</h2>'
+        '<div id="industry-news">%s<div class="pgbar" id="pg-industry-news"></div></div>'
+        '<script>initPager("industry-news",10);</script>' % pharma_items_html
+    ) if pharma_items_html else ""
+
     return """
 <div class="sync">Mac synced: %s &nbsp;&bull;&nbsp; USD &#8377;%s &nbsp;&bull;&nbsp; EUR &#8377;%s</div>
 <h2>Outreach Bot</h2>
 %s
-""" % (synced, forex["usd_inr"], forex["eur_inr"], stats_html)
+%s
+""" % (synced, forex["usd_inr"], forex["eur_inr"], stats_html, industry_section)
 
-
-def pharma_section(items):
-    if not items:
-        return '<div class="empty">No pharma/freight updates found.</div>'
-    rows = "".join(
-        '<div class="pulse-item"><div class="pulse-title">%s</div>'
-        '<div class="pulse-date">%s</div></div>' % (esc(it["title"]), esc(it["date"]))
-        for it in items)
-    return rows
 
 
 def day_tab(private):
@@ -594,11 +665,24 @@ def day_tab(private):
         synced, ev_html, rm_html, note_html)
 
 
-def claude_tab(private, billing):
+def claude_tab(private, billing, ai_news):
     ts = private.get("claude_session_ts", int(time.time()))
     synced = synced_ago(private.get("synced_at"))
     dt = datetime.fromtimestamp(ts)
     started = dt.strftime("%I:%M %p")
+
+    ai_items = "".join(
+        '<div class="pulse-item paged-item">'
+        '<div class="pulse-title">%s</div>'
+        '<div class="pulse-date">%s &middot; %s</div>'
+        '</div>' % (esc(it["title"]), esc(it["source"]), esc(it["date"]))
+        for it in ai_news)
+    ai_section = (
+        '<h2 style="margin-top:28px">AI &amp; Claude News</h2>'
+        '<div id="ai-news">%s<div class="pgbar" id="pg-ai-news"></div></div>'
+        '<script>initPager("ai-news",10);</script>' % ai_items
+    ) if ai_items else '<div class="empty">No AI news fetched.</div>'
+
     return """
 <div class="ctimer" id="ctimer">--</div>
 <div class="csub">remaining in session</div>
@@ -609,12 +693,13 @@ def claude_tab(private, billing):
   <div style="margin-top:20px;font-size:16px;color:#aaa">Billing resets in <b>%s</b></div>
   <div style="font-size:13px;color:#bbb;margin-top:6px">Session from Mac sync: %s</div>
 </div>
-""" % (esc(started), esc(billing), synced)
+%s
+""" % (esc(started), esc(billing), synced, ai_section)
 
 
-def news_tab(articles, hn_stories, pharma_items):
+def news_tab(articles, hn_stories):
     list_items = "".join(
-        '<div class="nitem">'
+        '<div class="nitem paged-item">'
         '<div class="ntitle" onclick="openArticle(%d)">%s</div>'
         '<div class="nsrc">%s</div>'
         '<div class="nact">'
@@ -637,16 +722,27 @@ def news_tab(articles, hn_stories, pharma_items):
         for i, a in enumerate(articles))
 
     hn_items = "".join(
-        '<div class="nitem"><div class="ntitle">%s</div>'
+        '<div class="nitem paged-item"><div class="ntitle">%s</div>'
         '<div class="hnscore">%s pts &middot; %s</div></div>' % (
             esc(s["title"]), s["score"], esc(s["by"]))
         for s in hn_stories)
-    hn_section = ('<h2 style="margin-top:28px">Hacker News</h2>' + hn_items) if hn_items else ""
+    hn_section = (
+        '<h2 style="margin-top:28px">Hacker News</h2>'
+        '<div id="hn-list">%s<div class="pgbar" id="pg-hn-list"></div></div>'
+        '<script>initPager("hn-list",8);</script>' % hn_items
+    ) if hn_items else ""
 
-    pharma_html = ('<h2 style="margin-top:28px">Industry Pulse</h2>' + pharma_section(pharma_items))
+    news_count = len(articles)
+    pager_script = '<script>initPager("world-news",%d);</script>' % min(10, news_count)
 
-    return '<div id="nl"><h2>News</h2>%s%s%s</div>%s' % (
-        list_items, hn_section, pharma_html, article_views)
+    return (
+        '<div id="nl">'
+        '<h2>World News</h2>'
+        '<div id="world-news">%s<div class="pgbar" id="pg-world-news"></div></div>'
+        '%s%s'
+        '</div>%s'
+        '%s'
+    ) % (list_items, pager_script, hn_section, article_views, "")
 
 
 def saved_tab():
@@ -733,20 +829,21 @@ def main():
     w     = fetch_weather();        print(f"  weather: {w['temp']}°C {w['condition']}")
     aqi   = fetch_aqi();            print(f"  AQI: {aqi['aqi']}")
     forex = fetch_currency();       print(f"  USD/INR: {forex['usd_inr']}")
-    news  = fetch_news();           print(f"  news: {len(news)} articles")
-    hn    = fetch_hn_top(5);        print(f"  HN: {len(hn)} stories")
-    pharma= fetch_pharma_news();    print(f"  pharma news: {len(pharma)} items")
-    gh    = fetch_github();         print(f"  github: {gh['username']}")
+    news  = fetch_news(12);          print(f"  news: {len(news)} articles")
+    hn    = fetch_hn_top(10);        print(f"  HN: {len(hn)} stories")
+    pharma= fetch_pharma_news(15);   print(f"  pharma news: {len(pharma)} items")
+    ai    = fetch_ai_news(15);       print(f"  AI news: {len(ai)} items")
+    gh    = fetch_github();          print(f"  github: {gh['username']}")
     billing = claude_billing_countdown()
 
     session_ts = private.get("claude_session_ts", int(time.time()))
 
     tabs = {
         "weather": weather_tab(w, aqi),
-        "bot":     bot_tab(private, forex),
+        "bot":     bot_tab(private, forex, pharma),
         "day":     day_tab(private),
-        "claude":  claude_tab(private, billing),
-        "news":    news_tab(news, hn, pharma),
+        "claude":  claude_tab(private, billing, ai),
+        "news":    news_tab(news, hn),
         "saved":   saved_tab(),
         "github":  github_tab(gh),
         "trader":  trader_tab(algo),
@@ -776,14 +873,15 @@ def main():
 <style>%s</style>
 </head><body>
 <div id="wrap">
-<div class="hdr">Dashboard <span class="r">%s</span></div>
+<div class="hdr">
+  <span id="mbtn" onclick="toggleMenu()">&#9776;</span>
+  Dashboard <span class="r">%s</span>
+  <div id="menu">%s</div>
+</div>
 %s
 </div>
-<div id="curtab">Weather</div>
-<div id="mbtn" onclick="toggleMenu()">&#9776;</div>
-<div id="menu">%s</div>
 <script>%s</script>
-</body></html>""" % (CSS, updated, tabs_divs, menu_items, js)
+</body></html>""" % (CSS, updated, menu_items, tabs_divs, js)
 
     out = OUT_DIR / "index.html"
     out.write_text(html, encoding="utf-8")

@@ -1,0 +1,61 @@
+{
+  "synced_at": "2026-06-17T20:29:06.444007",
+  "outreach": {
+    "today_sent": 0,
+    "in_pipeline": 33,
+    "total_sent": 59,
+    "replied": 0,
+    "pending": 109,
+    "bounced": 2,
+    "opens": 0,
+    "followups_due": 7,
+    "open_rate": 0,
+    "reply_rate": 0,
+    "events": [
+      {
+        "date": "2026-06-15",
+        "type": "FOLLOW_UP",
+        "company": "Magel Sa"
+      },
+      {
+        "date": "2026-06-15",
+        "type": "FOLLOW_UP",
+        "company": "Luna Co For Industrial Investments Sae"
+      },
+      {
+        "date": "2026-06-15",
+        "type": "FOLLOW_UP",
+        "company": "Middle East Chemical Manufacturing Co Wll"
+      },
+      {
+        "date": "2026-06-15",
+        "type": "DRAFT",
+        "company": "Bilim Ilac San Ve Tic As"
+      },
+      {
+        "date": "2026-06-15",
+        "type": "DRAFT",
+        "company": "Adrivan Comercio Importacao E Representacao Ltda"
+      }
+    ]
+  },
+  "calendar": [],
+  "reminders": [
+    "error: you need to grant reminders access"
+  ],
+  "notes": [
+    {
+      "title": "Split to column - done",
+      "preview": "Split to column - done\ncopy all in one sheet - done \nremove unnecessary data - done\nmob file vlookup - done \ngo to nikita's and priyanka's and puneet's file - done \nremove already already allocated cases - done\nPAN check to add on sheet disbursed - download ops report from meta - done\nsame check fro"
+    },
+    {
+      "title": "Snehal resume",
+      "preview": "Snehal resume\n￼"
+    },
+    {
+      "title": "Loan to be paid",
+      "preview": "Loan to be paid\n\n￼"
+    }
+  ],
+  "claude_session_ts": 1781708346
+}
